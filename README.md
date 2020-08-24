@@ -1,9 +1,18 @@
-# Fabric Example Mod
+# Join Messages
 
-## Setup
+A mod that sends configurable chat messages and commands when a player joins the server.
 
-For setup instructions please see the [fabric wiki page](https://fabricmc.net/wiki/tutorial:setup) that relates to the IDE that you are using.
+The config file is located in the config directory (`<root>/config/join_messages.json`) and looks like this:
 
-## License
+```JSON
+{
+  "messages": [
+    "Welcome %s! ",
+    "/say Hello %s"
+  ]
+}
+```
 
-This template is available under the CC0 license. Feel free to learn from it and incorporate it in your own projects.
+The JSON file is declaring, under the `messages` array, what it's going to be sent when a player joins. Every instance of `%s` will be replaced with the player's name.
+Commands must start with `/`.
+Use `/join_messages reload` to reload the mod configuration.

@@ -1,29 +1,30 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "join_messages",
   "version": "${version}",
 
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "Join Messages",
+  "description": "Adds configurable player join messages",
   "authors": [
-    "Me!"
+    "ByMartrixx"
   ],
   "contact": {
     "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "sources": "https://github.com/ByMartrixx/join-messages",
+    "issues": "https://github.com/ByMartrixx/join-messages/issues"
   },
 
-  "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
+  "license": "MIT",
+  "icon": "assets/join_messages/icon.png",
 
-  "environment": "*",
+  "environment": "server",
   "entrypoints": {
-    "main": [
-      "net.fabricmc.example.ExampleMod"
+    "server": [
+      "io.github.bymartrixx.join_messages.JoinMessages"
     ]
   },
   "mixins": [
-    "modid.mixins.json"
+    "join_messages.mixins.json"
   ],
 
   "depends": {

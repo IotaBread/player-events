@@ -1,0 +1,11 @@
+{
+    "required": false,
+    "package": "io.github.bymartrixx.join_messages.mixin",
+    "compatibilityLevel": "JAVA_8",
+    "mixins": [
+
+    ],
+    "server": [
+        "PlayerJoinMixin"
+    ]
+}
