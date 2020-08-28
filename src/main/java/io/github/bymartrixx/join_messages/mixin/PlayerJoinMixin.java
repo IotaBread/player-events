@@ -14,6 +14,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 public class PlayerJoinMixin {
     @Inject(method = "onPlayerConnect", at = @At("TAIL"))
     private void playerJoin(ClientConnection connection, ServerPlayerEntity player, CallbackInfo info) {
-        JoinMessagesConfigManager.getConfig().runMessages(player.getServer(), player);
+        JoinMessagesConfigManager.getConfig().runJoinMessages(player.getServer(), player);
     }
 }
