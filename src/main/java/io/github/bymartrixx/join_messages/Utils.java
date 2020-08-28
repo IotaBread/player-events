@@ -30,18 +30,12 @@ public class Utils {
     }
 
     public static String messageAsString(String message, PlayerEntity player) {
-        boolean bool1 = false;
-
-        if (message.charAt(message.length()-2) == '%' && message.charAt(message.length()-1) == 's') {
-            bool1 = true;
-        }
-
         String[] messagePieces = message.split("%s");
         String separator = player.getName().asString();
 
         String result = String.join(separator, messagePieces);
 
-        if (bool1) {
+        if (message.charAt(message.length()-2) == '%' && message.charAt(message.length()-1) == 's') {
             result = result + separator;
         }
 
@@ -49,12 +43,6 @@ public class Utils {
     }
 
     public static MutableText messageAsText(String message, PlayerEntity player) {
-        boolean bool1 = false;
-
-        if (message.charAt(message.length()-2) == '%' && message.charAt(message.length()-1) == 's') {
-            bool1 = true;
-        }
-
         String[] messagePieces = message.split("%s");
         MutableText result = new LiteralText("");
         MutableText[] pieces = new MutableText[messagePieces.length];
@@ -75,7 +63,7 @@ public class Utils {
             }
         }
 
-        if(bool1) {
+        if (message.charAt(message.length()-2) == '%' && message.charAt(message.length()-1) == 's') {
             result.append(player.getDisplayName());
         }
 
