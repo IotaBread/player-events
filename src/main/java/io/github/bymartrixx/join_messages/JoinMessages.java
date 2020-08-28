@@ -28,7 +28,9 @@ public class JoinMessages implements DedicatedServerModInitializer {
 
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
             if (dedicated) {
-                dispatcher.register(CommandManager.literal(MOD_ID).then(CommandManager.literal("reload")
+                dispatcher.register(CommandManager.literal(MOD_ID).requires((ServerCommandSource) -> {
+                    return ServerCommandSource.hasPermissionLevel(2);
+                }).then(CommandManager.literal("reload")
                     .executes(context -> {
                         ServerCommandSource source = context.getSource();
                         source.sendFeedback(new LiteralText("Reloading Join Messages config..."), true);
