@@ -30,14 +30,31 @@ public class Utils {
     }
 
     public static String messageAsString(String message, PlayerEntity player) {
+        boolean bool1 = false;
+
+        if (message.charAt(message.length()-2) == '%' && message.charAt(message.length()-1) == 's') {
+            bool1 = true;
+        }
+
         String[] messagePieces = message.split("%s");
         String separator = player.getName().asString();
 
-        return String.join(separator, messagePieces);
+        String result = String.join(separator, messagePieces);
+
+        if (bool1) {
+            result = result + separator;
+        }
+
+        return result;
     }
 
     public static MutableText messageAsText(String message, PlayerEntity player) {
-        //TODO: FORMATTING
+        boolean bool1 = false;
+
+        if (message.charAt(message.length()-2) == '%' && message.charAt(message.length()-1) == 's') {
+            bool1 = true;
+        }
+
         String[] messagePieces = message.split("%s");
         MutableText result = new LiteralText("");
         MutableText[] pieces = new MutableText[messagePieces.length];
@@ -56,6 +73,10 @@ public class Utils {
                     result.append(pieces[i / 2]);
                 }
             }
+        }
+
+        if(bool1) {
+            result.append(player.getDisplayName());
         }
 
         return result;
