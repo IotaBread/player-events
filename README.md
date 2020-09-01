@@ -2,6 +2,8 @@
 
 A mod that sends configurable chat messages and commands when a player joins the server.
 
+[![Requires Fabric API](https://i.imgur.com/Ol1Tcf8.png)](https://www.curseforge.com/minecraft/mc-mods/fabric-api)
+
 The config file is located in the config directory (`<root>/config/join_messages.json`) and looks like this:
 
 ```JSON
