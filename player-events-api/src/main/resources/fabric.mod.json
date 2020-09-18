@@ -1,0 +1,30 @@
+{
+    "schemaVersion": 1,
+    "id": "player_events_api",
+    "version": "${version}",
+    "name": "Player Events API",
+    "description": "An API for player events. Currently only with Join, Leave and Death",
+    "authors": [
+        "ByMartrixx"
+    ],
+    "contact": {
+        "sources": "https://github.com/ByMartrixx/join-messages",
+        "issues": "https://github.com/ByMartrixx/join-messages/issues"
+    },
+    "license": "MIT",
+    "icon": "assets/player_events_api/icon.png",
+    "environment": "*",
+    "entrypoints": {
+        "server": [
+            "io.github.bymartrixx.player_events.api.PlayerEventsAPI"
+        ]
+    },
+    "mixins": [
+        "player_events_api.mixins.json"
+    ],
+    "depends": {
+        "fabricloader": ">=0.7.4",
+        "fabric": "*",
+        "minecraft": "1.16.x"
+    }
+}
