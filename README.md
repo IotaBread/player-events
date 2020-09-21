@@ -1,5 +1,7 @@
 # Player Events
 
+[ ![Download](https://api.bintray.com/packages/bymartrixx/maven/player_events_api/images/download.svg) ](https://bintray.com/bymartrixx/maven/player_events_api/_latestVersion)
+
 A mod that executes and sends configurable commands and messages respectively when a player does something.
 
 **Downloads are on [the releases page](https://github.com/ByMartrixx/join-messages/releases).**
@@ -34,9 +36,31 @@ This part is intended for developers.
 3. You'll find the compiled `.jar` files under `<repository>/build/libs` and `<repository>/player-events-api/build/libs`
 
 ### API
-#### Adding the API as a dependency
+#### Adding the API as a dependency of your mod
+Add the following text to your `build.gradle`:
+```groovy
+repositories {
+    maven {
+        url 'https://dl.bintray.com/bymartrixx/maven'    
+    }
+}
+
+dependencies {
+    modImplementation 'PlayerEvents:player-events-api:${project.player_events_api_version}'
+}
 ```
-// TODO
+And this to your `gradle.properties`
+```properties
+player_events_api_version = 1.0.0
+```
+
+Also, this to your `fabric.mod.json`:
+```json
+{
+  "depends": {
+    "player_events_api": ">=1.0.0"
+  }
+}
 ```
 
 #### Events
