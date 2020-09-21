@@ -9,7 +9,19 @@ A mod that executes and sends configurable commands and messages respectively wh
 The config file is located in the config directory (`<root>/config/player_events.json`) and looks like this:
 
 ```
-//TODO: Example
+{
+  "death_actions": [
+    "%s just died! F"
+  ],
+  "join_actions": [
+    "Welcome %s",
+    "/say Hello %s"
+  ],
+  "leave_actions": [
+    "Goodbye %s!",
+    "/say Hope to see you soon %s"
+  ]
+}
 ```
 
 The JSON file is declaring, under the `<event>_actions` array, what it's going to be sent and/or executed on the `<event>`.
