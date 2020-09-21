@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "player_events",
   "version": "${version}",
-  "name": "player-events",
+  "name": "Player Events",
   "description": "A mod that sends a configurable command/message when a player joins, leaves and dies.",
   "authors": [
     "ByMartrixx"
