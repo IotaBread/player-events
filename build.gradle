@@ -46,8 +46,7 @@ allprojects {
         mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
         modImplementation "net.fabricmc:fabric-loader:${rootProject.loader_version}"
 
-        modImplementation fabricApi.module("fabric-api-base", rootProject.fabric_api_version)
-        modImplementation fabricApi.module("fabric-command-api-v1", rootProject.fabric_api_version)
+        modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
     }
 
     processResources {
