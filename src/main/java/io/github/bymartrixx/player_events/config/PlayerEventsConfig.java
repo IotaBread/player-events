@@ -1,6 +1,7 @@
 package io.github.bymartrixx.player_events.config;
 
 import io.github.bymartrixx.player_events.Utils;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -30,8 +31,8 @@ public class PlayerEventsConfig {
         return this.leaveMessages;
     }
 
-    public void sendDeathMessages(MinecraftServer server, ServerPlayerEntity player) {
-        Utils.sendMessagesToEveryone(server, player, deathMessages);
+    public void sendDeathMessages(ServerPlayerEntity player) {
+        Utils.sendMessagesToEveryone(player.getServer(), player, deathMessages);
     }
 
     public void sendJoinMessages(MinecraftServer server, ServerPlayerEntity player) {
