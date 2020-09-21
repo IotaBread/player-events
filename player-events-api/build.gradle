@@ -1,0 +1,45 @@
+bintray {
+    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_KEY')
+    publications = ["mavenJava"]
+    publish = false
+    pkg {
+        repo = 'maven'
+        name = 'player_events_api'
+        licenses = ['MIT']
+        vcsUrl = 'https://github.com/ByMartrixx/join-messages.git'
+        version {
+            released = new Date()
+            githubRepo = 'ByMartrixx/join_messages'
+            websiteUrl = 'https://github.com/ByMartrixx/join-messages'
+            issueTrackerUrl = 'https://github.com/ByMartrixx/join-messages/issues'
+            vcsUrl = 'https://github.com/ByMartrixx/join-messages.git'
+            gpg {
+                sign = true
+            }
+        }
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            // add all the jars that should be included when publishing to maven
+            artifact(jar) {
+                builtBy remapJar
+            }
+            artifact("${project.buildDir.absolutePath}/libs/${archivesBaseName}-${project.version}.jar"){
+                builtBy remapJar
+            }
+            artifact(sourcesJar) {
+                builtBy remapSourcesJar
+            }
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', 'An API to run code on players dying, joining and/or leaving')
+                root.appendNode('name', 'Player Events API')
+                root.appendNode('url', 'https://github.com/ByMartrixx/join-messages')
+            }
+        }
+    }
+}

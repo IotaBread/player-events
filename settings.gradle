@@ -9,6 +9,6 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
-rootProject.name = 'Player Events'
+rootProject.name = 'PlayerEvents'
 
 include 'player-events-api'

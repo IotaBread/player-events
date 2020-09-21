@@ -1,5 +1,14 @@
 import net.fabricmc.loom.task.RemapJarTask
 
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.+'
+    }
+}
+
 plugins {
     id "fabric-loom" version "0.5-SNAPSHOT"
     id "maven-publish"
@@ -20,6 +29,7 @@ subprojects {
 
 allprojects {
     apply plugin: "fabric-loom"
+    apply plugin: "com.jfrog.bintray"
     sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
     version = rootProject.mod_version
 
@@ -137,6 +147,29 @@ task remapTestmodJar(type: RemapJarTask, dependsOn: project.testmodJar) {
 
 build.dependsOn(remapTestmodJar)
 
+bintray {
+    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_KEY')
+    publications = ["mavenJava"]
+    publish = false
+    pkg {
+        repo = 'maven'
+        name = 'player_events'
+        licenses = ['MIT']
+        vcsUrl = 'https://github.com/ByMartrixx/join-messages.git'
+        version {
+            released = new Date()
+            githubRepo = 'ByMartrixx/join_messages'
+            websiteUrl = 'https://github.com/ByMartrixx/join-messages'
+            issueTrackerUrl = 'https://github.com/ByMartrixx/join-messages/issues'
+            vcsUrl = 'https://github.com/ByMartrixx/join-messages.git'
+            gpg {
+                sign = true
+            }
+        }
+    }
+}
+
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
@@ -150,6 +183,12 @@ publishing {
 			artifact(sourcesJar) {
 				builtBy remapSourcesJar
 			}
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', 'A mod that executes and sends configurable commands and messages respectively when a player does something.')
+                root.appendNode('name', 'Player Events')
+                root.appendNode('url', 'https://github.com/ByMartrixx/join-messages')
+            }
 		}
 	}
 
