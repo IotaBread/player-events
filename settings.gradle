@@ -1,3 +1,4 @@
+
 pluginManagement {
     repositories {
         jcenter()
@@ -8,5 +9,6 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
-rootProject.name = "Player-events"
-include ":player-events-api"
+rootProject.name = 'Player Events'
+
+include 'player-events-api'

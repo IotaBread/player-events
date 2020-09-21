@@ -1,74 +1,141 @@
+import net.fabricmc.loom.task.RemapJarTask
+
 plugins {
-	id 'fabric-loom' version '0.5-SNAPSHOT'
-	id 'maven-publish'
+    id "fabric-loom" version "0.5-SNAPSHOT"
+    id "maven-publish"
+    id "java-library"
 }
 
 archivesBaseName = project.archives_base_name
-version = project.mod_version
 group = project.maven_group
 
-minecraft {
+subprojects {
+    apply plugin: 'fabric-loom'
+    apply plugin: 'maven-publish'
+    apply plugin: 'java-library'
+
+    archivesBaseName = project.name
 }
+
 allprojects {
-	apply plugin: 'fabric-loom'
-	sourceCompatibility = JavaVersion.VERSION_1_8
-	targetCompatibility = JavaVersion.VERSION_1_8
+    apply plugin: "fabric-loom"
+    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
+    version = rootProject.mod_version
 
-	repositories {
-		mavenCentral()
-		maven {
-			name = 'Fabric'
-			url = 'https://maven.fabricmc.net/'
-		}
-	}
+    repositories {
+        maven {
+            name = "FabricMC"
+            url = "https://maven.fabricmc.net"
+        }
+    }
 
-	dependencies {
-		//to change the versions see the gradle.properties file
-		minecraft "com.mojang:minecraft:${project.minecraft_version}"
-		mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-		modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    dependencies {
+        //to change the versions see the gradle.properties file
+        minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
+        mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+        modImplementation "net.fabricmc:fabric-loader:${rootProject.loader_version}"
 
-		modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-	}
+        modImplementation fabricApi.module("fabric-api-base", rootProject.fabric_api_version)
+        modImplementation fabricApi.module("fabric-command-api-v1", rootProject.fabric_api_version)
+    }
 
-	processResources {
-		inputs.property "version", project.version
+    processResources {
+        // this will ensure that this task is redone when there"s a change
+        inputs.property "version", project.version
 
-		from(sourceSets.main.resources.srcDirs) {
-			include "fabric.mod.json"
-			expand "version": project.version
-		}
+        // replace stuff in fabric.mod.json, nothing else
+        from(sourceSets.main.resources.srcDirs) {
+            include "fabric.mod.json"
 
-		from(sourceSets.main.resources.srcDirs) {
-			exclude "fabric.mod.json"
-		}
-	}
+            // add mod metadata
+            expand "version": project.version
+        }
 
-	// ensure that the encoding is set to UTF-8, no matter what the system default is
-	// this fixes some edge cases with special characters not displaying correctly
-	// see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
-	tasks.withType(JavaCompile) {
-		options.encoding = "UTF-8"
-	}
+        // copy everything else, that"s not the fabric.mod.json
+        from(sourceSets.main.resources.srcDirs) {
+            exclude "fabric.mod.json"
+        }
+    }
 
-	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-	// if it is present.
-	// If you remove this task, sources will not be generated.
-	task sourcesJar(type: Jar, dependsOn: classes) {
-		classifier = "sources"
-		from sourceSets.main.allSource
-	}
+    // ensure that the encoding is set to UTF-8, no matter what the system default is
+    // this fixes some edge cases with special characters not displaying correctly
+    // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+    }
 
-	jar {
-		from "LICENSE"
-	}
+    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+    // if it is present.
+    // If you remove this task, sources will not be generated.
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = "sources"
+        from sourceSets.main.allSource
+    }
+
+    jar {
+        from "LICENSE"
+    }
+
+    // TODO: License checker
 }
 
-project(':player-events-api') {
-	archivesBaseName = project.api_archives_base_name
+subprojects {
+    version = rootProject.version
 }
 
-// configure the maven publication
+sourceSets {
+    testmod {
+        compileClasspath += main.compileClasspath
+        runtimeClasspath += main.runtimeClasspath
+    }
+    test {
+        compileClasspath += main.compileClasspath
+        runtimeClasspath += main.runtimeClasspath
+    }
+}
+
+repositories {
+    maven {
+        name = "JitPack"
+        url = "https://jitpack.io"
+    }
+}
+
+dependencies {
+    // used by the test mod
+    modImplementation fabricApi.module("fabric-api-base", rootProject.fabric_api_version)
+    modImplementation fabricApi.module("fabric-command-api-v1", rootProject.fabric_api_version)
+
+    testCompileOnly "com.google.code.findbugs:jsr305:3.0.2"
+
+    afterEvaluate {
+        subprojects.each {
+            api it
+            include it
+        }
+    }
+}
+
+task testmodJar(type: Jar, dependsOn: testmodClasses) {
+    archiveBaseName = 'PlayerEventsTest'
+    archiveClassifier = 'dev'
+    from(sourceSets.testmod.output) {
+        include 'fabric.mod.json'
+        expand 'version': project.version
+    }
+    from(sourceSets.testmod.output) {
+        exclude 'fabric.mod.json'
+    }
+}
+
+task remapTestmodJar(type: RemapJarTask, dependsOn: project.testmodJar) {
+    archiveBaseName = 'PlayerEventsTest'
+    input = testmodJar.archiveFile
+    addNestedDependencies = false
+}
+
+build.dependsOn(remapTestmodJar)
+
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
