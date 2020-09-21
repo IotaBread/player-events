@@ -24,6 +24,7 @@
   "mixins": [],
   "depends": {
     "fabricloader": ">=0.9.3",
-    "fabric": "*"
+    "fabric": "*",
+    "player_events_api": "*"
   }
 }

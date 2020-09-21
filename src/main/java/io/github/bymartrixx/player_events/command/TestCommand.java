@@ -12,28 +12,28 @@ public class TestCommand {
 
         LiteralCommandNode<ServerCommandSource> joinNode = literal("join")
                 .executes(context -> {
-                    PlayerEventsConfigManager.getConfig().testJoinMessages(context.getSource());
+                    PlayerEventsConfigManager.getConfig().testJoinActions(context.getSource());
                     return 1;
                 })
                 .build();
 
         LiteralCommandNode<ServerCommandSource> leaveNode = literal("leave")
                 .executes(context -> {
-                    PlayerEventsConfigManager.getConfig().testLeaveMessages(context.getSource());
+                    PlayerEventsConfigManager.getConfig().testLeaveActions(context.getSource());
                     return 1;
                 })
                 .build();
 
         LiteralCommandNode<ServerCommandSource> deathNode = literal("death")
                 .executes(context -> {
-                    PlayerEventsConfigManager.getConfig().testDeathMessages(context.getSource());
+                    PlayerEventsConfigManager.getConfig().testDeathActions(context.getSource());
                     return 1;
                 })
                 .build();
 
         LiteralCommandNode<ServerCommandSource> everyNode = literal("*")
                 .executes(context -> {
-                    PlayerEventsConfigManager.getConfig().testEveryMessageGroup(context.getSource());
+                    PlayerEventsConfigManager.getConfig().testEveryActionGroup(context.getSource());
                     return 1;
                 })
                 .build();

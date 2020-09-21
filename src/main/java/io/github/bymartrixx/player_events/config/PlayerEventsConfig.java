@@ -9,58 +9,58 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
 
 public class PlayerEventsConfig {
-    private final String[] deathMessages;
-    private final String[] joinMessages;
-    private final String[] leaveMessages;
+    private final String[] deathActions;
+    private final String[] joinActions;
+    private final String[] leaveActions;
 
     public PlayerEventsConfig() {
-        this.deathMessages = new String[] {};
-        this.joinMessages = new String[] {};
-        this.leaveMessages = new String[] {};
+        this.deathActions = new String[] {};
+        this.joinActions = new String[] {};
+        this.leaveActions = new String[] {};
     }
 
-    public String[] getDeathMessages() {
-        return this.deathMessages;
+    public String[] getDeathActions() {
+        return this.deathActions;
     }
 
-    public String[] getJoinMessages() {
-        return this.joinMessages;
+    public String[] getJoinActions() {
+        return this.joinActions;
     }
 
-    public String[] getLeaveMessages() {
-        return this.leaveMessages;
+    public String[] getLeaveActions() {
+        return this.leaveActions;
     }
 
-    public void sendDeathMessages(ServerPlayerEntity player) {
-        Utils.sendMessagesToEveryone(player.getServer(), player, deathMessages);
+    public void executeDeathActions(ServerPlayerEntity player) {
+        Utils.sendMessagesToEveryone(player.getServer(), player, deathActions);
     }
 
-    public void sendJoinMessages(MinecraftServer server, ServerPlayerEntity player) {
-        Utils.sendMessagesToEveryone(server, player, joinMessages);
+    public void executeJoinActions(MinecraftServer server, ServerPlayerEntity player) {
+        Utils.sendMessagesToEveryone(server, player, joinActions);
     }
 
-    public void sendLeaveMessages(MinecraftServer server, ServerPlayerEntity player) {
-        Utils.sendMessagesToEveryone(server, player, leaveMessages);
+    public void executeLeaveActions(MinecraftServer server, ServerPlayerEntity player) {
+        Utils.sendMessagesToEveryone(server, player, leaveActions);
     }
 
-    public void testDeathMessages(ServerCommandSource source) {
-        source.sendFeedback(new LiteralText("Death messages:").formatted(Formatting.GRAY, Formatting.ITALIC), false);
-        Utils.sendMessagesToSource(source, deathMessages);
+    public void testDeathActions(ServerCommandSource source) {
+        source.sendFeedback(new LiteralText("Death actions:").formatted(Formatting.GRAY, Formatting.ITALIC), false);
+        Utils.sendMessagesToSource(source, deathActions);
     }
 
-    public void testJoinMessages(ServerCommandSource source) {
-        source.sendFeedback(new LiteralText("Join messages:").formatted(Formatting.GRAY, Formatting.ITALIC), false);
-        Utils.sendMessagesToSource(source, joinMessages);
+    public void testJoinActions(ServerCommandSource source) {
+        source.sendFeedback(new LiteralText("Join actions:").formatted(Formatting.GRAY, Formatting.ITALIC), false);
+        Utils.sendMessagesToSource(source, joinActions);
     }
 
-    public void testLeaveMessages(ServerCommandSource source) {
-        source.sendFeedback(new LiteralText("Leave messages:").formatted(Formatting.GRAY, Formatting.ITALIC), false);
-        Utils.sendMessagesToSource(source, leaveMessages);
+    public void testLeaveActions(ServerCommandSource source) {
+        source.sendFeedback(new LiteralText("Leave actions:").formatted(Formatting.GRAY, Formatting.ITALIC), false);
+        Utils.sendMessagesToSource(source, leaveActions);
     }
 
-    public void testEveryMessageGroup(ServerCommandSource source) {
-        testDeathMessages(source);
-        testJoinMessages(source);
-        testLeaveMessages(source);
+    public void testEveryActionGroup(ServerCommandSource source) {
+        testDeathActions(source);
+        testJoinActions(source);
+        testLeaveActions(source);
     }
 }

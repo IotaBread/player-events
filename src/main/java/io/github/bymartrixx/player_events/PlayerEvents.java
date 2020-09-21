@@ -28,17 +28,17 @@ public class PlayerEvents implements DedicatedServerModInitializer {
         PlayerEventsConfigManager.loadConfig();
 
         PlayerDeathCallback.EVENT.register((player, source) -> {
-            PlayerEventsConfigManager.getConfig().sendDeathMessages(player);
+            PlayerEventsConfigManager.getConfig().executeDeathActions(player);
             return ActionResult.PASS;
         });
 
         PlayerJoinCallback.EVENT.register((player, server) -> {
-            PlayerEventsConfigManager.getConfig().sendJoinMessages(server, player);
+            PlayerEventsConfigManager.getConfig().executeJoinActions(server, player);
             return ActionResult.PASS;
         });
 
         PlayerLeaveCallback.EVENT.register(((player, server) -> {
-            PlayerEventsConfigManager.getConfig().sendLeaveMessages(server, player);
+            PlayerEventsConfigManager.getConfig().executeLeaveActions(server, player);
             return ActionResult.PASS;
         }));
     }
