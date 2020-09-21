@@ -1,10 +1,10 @@
 # Player Events
 
-[ ![Download](https://api.bintray.com/packages/bymartrixx/maven/player_events_api/images/download.svg) ](https://bintray.com/bymartrixx/maven/player_events_api/_latestVersion)
+[ ![Download](https://api.bintray.com/packages/bymartrixx/maven/player_events_api/images/download.svg) ](https://github.com/ByMartrixx/join-messages/releases/tag/1.0.0)
+
+<a href='https://www.curseforge.com/minecraft/mc-mods/fabric-api'><img src='https://i.imgur.com/Ol1Tcf8.png' width="150"></a>
 
 A mod that executes and sends configurable commands and messages respectively when a player does something.
-
-**Downloads are on [the releases page](https://github.com/ByMartrixx/join-messages/releases).**
 
 The config file is located in the config directory (`<root>/config/player_events.json`) and looks like this:
 
