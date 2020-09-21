@@ -4,6 +4,7 @@ plugins {
     id "fabric-loom" version "0.5-SNAPSHOT"
     id "maven-publish"
     id "java-library"
+    id "com.matthewprenger.cursegradle" version "1.4.0"
 }
 
 archivesBaseName = project.archives_base_name
@@ -157,4 +158,32 @@ publishing {
 		// uncomment to publish to the local maven
 		// mavenLocal()
 	}
+}
+
+curseforge {
+    if (project.hasProperty('curse_api_key')) {
+        apiKey = project.getProperty('curse_api_key')
+    }
+    project {
+        id = '404348'
+        changelog = 'A changelog can be found at https://github.com/ByMartrixx/join-messages'
+        releaseType = 'release'
+        addGameVersion '1.16'
+        addGameVersion '1.16.1'
+        addGameVersion '1.16.2'
+        addGameVersion '1.16.3'
+        addGameVersion 'Fabric'
+        mainArtifact(remapJar) {
+            displayName = "Player Events $version $project.valid_minecraft_version"
+        }
+        addArtifact(project(':player-events-api').buildDir.absolutePath + "/libs/" + project(':player-events-api').name + "-${project.version}.jar") {
+            displayName = "Player Events API $version $project.valid_minecraft_version"
+        }
+        afterEvaluate {
+            uploadTask.dependsOn("remapJar")
+        }
+    }
+    options {
+        forgeGradleIntegration = false
+    }
 }
