@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "player_events",
+  "id": "player_events_api",
   "version": "${version}",
-  "name": "Player Events",
-  "description": "A mod that sends a configurable command/message when a player joins, leaves and dies.",
+  "name": "Player Events API",
+  "description": "An API to run code on players dying, joining and/or leaving",
   "authors": [
     "ByMartrixx"
   ],
@@ -12,16 +12,16 @@
     "sources": "https://github.com/ByMartrixx/join-messages/"
   },
   "license": "MIT",
-  "icon": "assets/player_events/icon.png",
+  "icon": "assets/player_events_api/icon.png",
   "environment": "*",
   "entrypoints": {
-    "main": [
-      "io.github.bymartrixx.player_events.PlayerEvents"
-    ],
+    "main": [],
     "client": [],
     "server": []
   },
-  "mixins": [],
+  "mixins": [
+    "player_events_api.mixins.json"
+  ],
   "depends": {
     "fabricloader": ">=0.9.3",
     "fabric": "*"
