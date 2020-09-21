@@ -25,5 +25,8 @@
   "depends": {
     "fabricloader": ">=0.9.3",
     "fabric": "*"
+  },
+  "custom": {
+    "modmenu:api": true
   }
 }
