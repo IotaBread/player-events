@@ -15,11 +15,11 @@
   "icon": "assets/player_events/icon.png",
   "environment": "*",
   "entrypoints": {
-    "main": [
-      "io.github.bymartrixx.player_events.PlayerEvents"
-    ],
+    "main": [],
     "client": [],
-    "server": []
+    "server": [
+      "io.github.bymartrixx.player_events.PlayerEvents"
+    ]
   },
   "mixins": [],
   "depends": {

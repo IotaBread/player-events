@@ -8,6 +8,7 @@ import io.github.bymartrixx.player_events.api.event.PlayerJoinCallback;
 import io.github.bymartrixx.player_events.api.event.PlayerLeaveCallback;
 import io.github.bymartrixx.player_events.command.PlayerEventsCommand;
 import io.github.bymartrixx.player_events.config.PlayerEventsConfigManager;
+import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.util.ActionResult;
@@ -15,7 +16,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class PlayerEvents implements ModInitializer {
+public class PlayerEvents implements DedicatedServerModInitializer {
 
     public static Logger LOGGER = LogManager.getLogger();
     public static final Gson GSON = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).setPrettyPrinting().create();
@@ -24,14 +25,12 @@ public class PlayerEvents implements ModInitializer {
     public static final String MOD_NAME = "Player Events";
 
     @Override
-    public void onInitialize() {
+    public void onInitializeServer() {
         log(Level.INFO, "Initializing");
 
         PlayerEventsConfigManager.loadConfig();
 
-        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
-            PlayerEventsCommand.register(dispatcher);
-        });
+        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> PlayerEventsCommand.register(dispatcher));
 
         PlayerDeathCallback.EVENT.register((player, source) -> {
             PlayerEventsConfigManager.getConfig().executeDeathActions(player);
