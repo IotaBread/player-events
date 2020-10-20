@@ -145,6 +145,7 @@ task remapTestmodJar(type: RemapJarTask, dependsOn: project.testmodJar) {
 }
 
 build.dependsOn(remapTestmodJar)
+remapJar.dependsOn("player-events-api:remapJar")
 
 bintray {
     user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
