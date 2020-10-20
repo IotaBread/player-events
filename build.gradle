@@ -155,13 +155,13 @@ bintray {
         repo = 'maven'
         name = 'player_events'
         licenses = ['MIT']
-        vcsUrl = 'https://github.com/ByMartrixx/join-messages.git'
+        vcsUrl = 'https://github.com/ByMartrixx/player-events.git'
         version {
             released = new Date()
-            githubRepo = 'ByMartrixx/join_messages'
-            websiteUrl = 'https://github.com/ByMartrixx/join-messages'
-            issueTrackerUrl = 'https://github.com/ByMartrixx/join-messages/issues'
-            vcsUrl = 'https://github.com/ByMartrixx/join-messages.git'
+            githubRepo = 'ByMartrixx/player-events'
+            websiteUrl = 'https://github.com/ByMartrixx/player-events'
+            issueTrackerUrl = 'https://github.com/ByMartrixx/player-events/issues'
+            vcsUrl = 'https://github.com/ByMartrixx/player-events.git'
             gpg {
                 sign = true
             }
@@ -186,7 +186,7 @@ publishing {
                 def root = asNode()
                 root.appendNode('description', 'A mod that executes and sends configurable commands and messages respectively when a player does something.')
                 root.appendNode('name', 'Player Events')
-                root.appendNode('url', 'https://github.com/ByMartrixx/join-messages')
+                root.appendNode('url', 'https://github.com/ByMartrixx/player-events')
             }
 		}
 	}
@@ -204,7 +204,7 @@ curseforge {
     }
     project {
         id = '404348'
-        changelog = 'A changelog can be found at https://github.com/ByMartrixx/join-messages'
+        changelog = 'A changelog can be found at https://github.com/ByMartrixx/player-events'
         releaseType = 'release'
         addGameVersion '1.16'
         addGameVersion '1.16.1'
