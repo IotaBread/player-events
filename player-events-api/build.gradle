@@ -1,3 +1,5 @@
+group = "${rootProject.group}.api"
+
 bintray {
     user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
     key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_KEY')
@@ -40,6 +42,8 @@ publishing {
                 root.appendNode('name', 'Player Events API')
                 root.appendNode('url', 'https://github.com/ByMartrixx/player-events')
             }
+            groupId("${project.group}")
+            artifactId 'player-events-api'
         }
     }
 }

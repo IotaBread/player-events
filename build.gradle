@@ -189,6 +189,8 @@ publishing {
                 root.appendNode('name', 'Player Events')
                 root.appendNode('url', 'https://github.com/ByMartrixx/player-events')
             }
+            groupId("${project.maven_group}")
+            artifactId 'player-events'
 		}
 	}
 
