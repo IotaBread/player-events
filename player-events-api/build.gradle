@@ -7,13 +7,13 @@ bintray {
         repo = 'maven'
         name = 'player_events_api'
         licenses = ['MIT']
-        vcsUrl = 'https://github.com/ByMartrixx/join-messages.git'
+        vcsUrl = 'https://github.com/ByMartrixx/player-events.git'
         version {
             released = new Date()
             githubRepo = 'ByMartrixx/join_messages'
-            websiteUrl = 'https://github.com/ByMartrixx/join-messages'
-            issueTrackerUrl = 'https://github.com/ByMartrixx/join-messages/issues'
-            vcsUrl = 'https://github.com/ByMartrixx/join-messages.git'
+            websiteUrl = 'https://github.com/ByMartrixx/player-events'
+            issueTrackerUrl = 'https://github.com/ByMartrixx/player-events/issues'
+            vcsUrl = 'https://github.com/ByMartrixx/player-events.git'
             gpg {
                 sign = true
             }
@@ -38,7 +38,7 @@ publishing {
                 def root = asNode()
                 root.appendNode('description', 'An API to run code on players dying, joining and/or leaving')
                 root.appendNode('name', 'Player Events API')
-                root.appendNode('url', 'https://github.com/ByMartrixx/join-messages')
+                root.appendNode('url', 'https://github.com/ByMartrixx/player-events')
             }
         }
     }
