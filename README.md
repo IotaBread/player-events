@@ -59,7 +59,7 @@ repositories {
 }
 
 dependencies {
-    modImplementation 'PlayerEvents:player-events-api:${project.player_events_api_version}'
+    modImplementation "io.github.bymartrixx.player_events.api:player-events-api:${project.player_events_api_version}"
 }
 ```
 And this to your `gradle.properties`
