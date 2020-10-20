@@ -1,6 +1,7 @@
 # Player Events
 
 [ ![Download](https://api.bintray.com/packages/bymartrixx/maven/player_events_api/images/download.svg) ](https://github.com/ByMartrixx/join-messages/releases/tag/1.0.0)
+[ ![Build Status](https://travis-ci.com/ByMartrixx/player-events.svg?branch=master)](https://travis-ci.com/ByMartrixx/player-events)
 
 <a href='https://www.curseforge.com/minecraft/mc-mods/fabric-api'><img src='https://i.imgur.com/Ol1Tcf8.png' width="150"></a>
 
