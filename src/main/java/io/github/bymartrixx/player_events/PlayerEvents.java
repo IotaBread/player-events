@@ -20,12 +20,13 @@ public class PlayerEvents implements DedicatedServerModInitializer {
 
     public static final String MOD_ID = "player_events";
     public static final String MOD_NAME = "Player Events";
+    public static final String VERSION = "2.0.0";
 
     public static PlayerEventsConfig CONFIG;
 
     @Override
     public void onInitializeServer() {
-        log(Level.INFO, "Initializing");
+        log(Level.INFO, "Initializing...");
 
         PlayerEventsConfig.Manager.loadConfig();
 
@@ -55,10 +56,15 @@ public class PlayerEvents implements DedicatedServerModInitializer {
             CONFIG.runKillEntityActions(player.getServer(), player, killedEntity);
             return ActionResult.PASS;
         });
+
+        log(Level.INFO, "Initialized {} version {}", MOD_NAME, VERSION);
     }
 
-    public static void log(Level level, String message){
-        LOGGER.log(level, "["+MOD_NAME+"] " + message);
+    public static void log(Level level, String message) {
+        log(level, message, (Object) null);
     }
 
+    public static void log(Level level, String message, Object ... fields){
+        LOGGER.log(level, "["+MOD_NAME+"] " + message, fields);
+    }
 }
