@@ -18,7 +18,7 @@ public class PlayerLeaveMixin {
 
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerEntity;onDisconnect()V"), method = "onDisconnected", cancellable = true)
     private void onPlayerLeave(Text reason, CallbackInfo info) {
-        ActionResult result = PlayerLeaveCallback.EVENT.invoker().leave(this.player, this.player.getServer());
+        ActionResult result = PlayerLeaveCallback.EVENT.invoker().leaveServer(this.player, this.player.getServer());
 
         if (result == ActionResult.FAIL) {
             info.cancel();
