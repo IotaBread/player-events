@@ -12,11 +12,15 @@ public class PlayerEventsConfig {
     private final String[] deathActions;
     private final String[] joinActions;
     private final String[] leaveActions;
+    private final String[] killPlayerActions;
+    private final String[] killEntityActions;
 
     public PlayerEventsConfig() {
         this.deathActions = new String[] {};
         this.joinActions = new String[] {};
         this.leaveActions = new String[] {};
+        this.killPlayerActions = new String[] {};
+        this.killEntityActions = new String[] {};
     }
 
     public String[] getDeathActions() {
@@ -31,6 +35,14 @@ public class PlayerEventsConfig {
         return this.leaveActions;
     }
 
+    public String[] getKillPlayerActions() {
+        return this.killPlayerActions;
+    }
+
+    public String[] getKillEntityActions() {
+        return this.killEntityActions;
+    }
+
     public void executeDeathActions(ServerPlayerEntity player) {
         Utils.sendMessagesToEveryone(player.getServer(), player, deathActions);
     }
@@ -41,6 +53,14 @@ public class PlayerEventsConfig {
 
     public void executeLeaveActions(MinecraftServer server, ServerPlayerEntity player) {
         Utils.sendMessagesToEveryone(server, player, leaveActions);
+    }
+
+    public void executeKillPlayerActions(MinecraftServer server, ServerPlayerEntity player) {
+        Utils.sendMessagesToEveryone(server, player, killPlayerActions);
+    }
+
+    public void executeKillEntityActions(MinecraftServer server, ServerPlayerEntity player) {
+        Utils.sendMessagesToEveryone(server, player, killEntityActions);
     }
 
     public void testDeathActions(ServerCommandSource source) {
@@ -58,9 +78,21 @@ public class PlayerEventsConfig {
         Utils.sendMessagesToSource(source, leaveActions);
     }
 
+    public void testKillPlayerActions(ServerCommandSource source) {
+        source.sendFeedback(new LiteralText("Kill player actions:").formatted(Formatting.GRAY, Formatting.ITALIC), false);
+        Utils.sendMessagesToSource(source, killPlayerActions);
+    }
+
+    public void testKillEntityActions(ServerCommandSource source) {
+        source.sendFeedback(new LiteralText("Kill entity actions:").formatted(Formatting.GRAY, Formatting.ITALIC), false);
+        Utils.sendMessagesToSource(source, killEntityActions);
+    }
+
     public void testEveryActionGroup(ServerCommandSource source) {
         testDeathActions(source);
         testJoinActions(source);
         testLeaveActions(source);
+        testKillPlayerActions(source);
+        testKillEntityActions(source);
     }
 }

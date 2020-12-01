@@ -3,9 +3,7 @@ package io.github.bymartrixx.player_events;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import io.github.bymartrixx.player_events.api.event.PlayerDeathCallback;
-import io.github.bymartrixx.player_events.api.event.PlayerJoinCallback;
-import io.github.bymartrixx.player_events.api.event.PlayerLeaveCallback;
+import io.github.bymartrixx.player_events.api.event.*;
 import io.github.bymartrixx.player_events.command.PlayerEventsCommand;
 import io.github.bymartrixx.player_events.config.PlayerEventsConfigManager;
 import net.fabricmc.api.DedicatedServerModInitializer;
@@ -42,10 +40,20 @@ public class PlayerEvents implements DedicatedServerModInitializer {
             return ActionResult.PASS;
         });
 
-        PlayerLeaveCallback.EVENT.register(((player, server) -> {
+        PlayerLeaveCallback.EVENT.register((player, server) -> {
             PlayerEventsConfigManager.getConfig().executeLeaveActions(server, player);
             return ActionResult.PASS;
-        }));
+        });
+
+        PlayerKillPlayerCallback.EVENT.register((player, killedPlayer) -> {
+            PlayerEventsConfigManager.getConfig().executeKillPlayerActions(player.getServer(), player);
+            return ActionResult.PASS;
+        });
+
+        PlayerKillEntityCallback.EVENT.register((player, entity) -> {
+            PlayerEventsConfigManager.getConfig().executeKillEntityActions(player.getServer(), player);
+            return ActionResult.PASS;
+        });
     }
 
     public static void log(Level level, String message){
