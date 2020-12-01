@@ -32,27 +32,27 @@ public class PlayerEvents implements DedicatedServerModInitializer {
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> PlayerEventsCommand.register(dispatcher));
 
         PlayerDeathCallback.EVENT.register((player, source) -> {
-            CONFIG.executeDeathActions(player);
+            CONFIG.runDeathActions(player);
             return ActionResult.PASS;
         });
 
         PlayerJoinCallback.EVENT.register((player, server) -> {
-            CONFIG.executeJoinActions(server, player);
+            CONFIG.runJoinActions(server, player);
             return ActionResult.PASS;
         });
 
         PlayerLeaveCallback.EVENT.register((player, server) -> {
-            CONFIG.executeLeaveActions(server, player);
+            CONFIG.runLeaveActions(server, player);
             return ActionResult.PASS;
         });
 
         PlayerKillPlayerCallback.EVENT.register((player, killedPlayer) -> {
-            CONFIG.executeKillPlayerActions(player.getServer(), player);
+            CONFIG.runKillPlayerActions(player.getServer(), player, killedPlayer);
             return ActionResult.PASS;
         });
 
-        PlayerKillEntityCallback.EVENT.register((player, entity) -> {
-            CONFIG.executeKillEntityActions(player.getServer(), player);
+        PlayerKillEntityCallback.EVENT.register((player, killedEntity) -> {
+            CONFIG.runKillEntityActions(player.getServer(), player, killedEntity);
             return ActionResult.PASS;
         });
     }
