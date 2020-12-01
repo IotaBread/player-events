@@ -5,9 +5,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.github.bymartrixx.player_events.api.event.*;
 import io.github.bymartrixx.player_events.command.PlayerEventsCommand;
-import io.github.bymartrixx.player_events.config.PlayerEventsConfigManager;
+import io.github.bymartrixx.player_events.config.PlayerEventsConfig;
 import net.fabricmc.api.DedicatedServerModInitializer;
-import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.util.ActionResult;
 import org.apache.logging.log4j.Level;
@@ -22,36 +21,38 @@ public class PlayerEvents implements DedicatedServerModInitializer {
     public static final String MOD_ID = "player_events";
     public static final String MOD_NAME = "Player Events";
 
+    public static PlayerEventsConfig CONFIG;
+
     @Override
     public void onInitializeServer() {
         log(Level.INFO, "Initializing");
 
-        PlayerEventsConfigManager.loadConfig();
+        PlayerEventsConfig.Manager.loadConfig();
 
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> PlayerEventsCommand.register(dispatcher));
 
         PlayerDeathCallback.EVENT.register((player, source) -> {
-            PlayerEventsConfigManager.getConfig().executeDeathActions(player);
+            CONFIG.executeDeathActions(player);
             return ActionResult.PASS;
         });
 
         PlayerJoinCallback.EVENT.register((player, server) -> {
-            PlayerEventsConfigManager.getConfig().executeJoinActions(server, player);
+            CONFIG.executeJoinActions(server, player);
             return ActionResult.PASS;
         });
 
         PlayerLeaveCallback.EVENT.register((player, server) -> {
-            PlayerEventsConfigManager.getConfig().executeLeaveActions(server, player);
+            CONFIG.executeLeaveActions(server, player);
             return ActionResult.PASS;
         });
 
         PlayerKillPlayerCallback.EVENT.register((player, killedPlayer) -> {
-            PlayerEventsConfigManager.getConfig().executeKillPlayerActions(player.getServer(), player);
+            CONFIG.executeKillPlayerActions(player.getServer(), player);
             return ActionResult.PASS;
         });
 
         PlayerKillEntityCallback.EVENT.register((player, entity) -> {
-            PlayerEventsConfigManager.getConfig().executeKillEntityActions(player.getServer(), player);
+            CONFIG.executeKillEntityActions(player.getServer(), player);
             return ActionResult.PASS;
         });
     }
