@@ -7,9 +7,9 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 
 public interface PlayerDeathCallback {
-    Event<PlayerDeathCallback> EVENT = EventFactory.createArrayBacked(PlayerDeathCallback.class, (listeners) -> (player, source) -> {
+    Event<PlayerDeathCallback> EVENT = EventFactory.createArrayBacked(PlayerDeathCallback.class, (listeners) -> (player, source) ->{
         for (PlayerDeathCallback listener : listeners) {
-            ActionResult result = listener.kill(player, source);
+            ActionResult result = listener.interact(player, source);
 
             if (result != ActionResult.PASS) {
                 return result;
@@ -19,5 +19,5 @@ public interface PlayerDeathCallback {
         return ActionResult.PASS;
     });
 
-    ActionResult kill(ServerPlayerEntity player, DamageSource source);
+    ActionResult interact(ServerPlayerEntity player, DamageSource source);
 }

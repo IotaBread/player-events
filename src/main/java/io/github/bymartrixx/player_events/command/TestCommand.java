@@ -31,20 +31,6 @@ public class TestCommand {
                 })
                 .build();
 
-        LiteralCommandNode<ServerCommandSource> killPlayerNode = literal("kill_player")
-                .executes(context -> {
-                    PlayerEventsConfigManager.getConfig().testKillPlayerActions(context.getSource());
-                    return 1;
-                })
-                .build();
-
-        LiteralCommandNode<ServerCommandSource> killEntityNode = literal("kill_entity")
-                .executes(context -> {
-                    PlayerEventsConfigManager.getConfig().testKillEntityActions(context.getSource());
-                    return 1;
-                })
-                .build();
-
         LiteralCommandNode<ServerCommandSource> everyNode = literal("*")
                 .executes(context -> {
                     PlayerEventsConfigManager.getConfig().testEveryActionGroup(context.getSource());
@@ -55,8 +41,6 @@ public class TestCommand {
         testNode.addChild(joinNode);
         testNode.addChild(leaveNode);
         testNode.addChild(deathNode);
-        testNode.addChild(killPlayerNode);
-        testNode.addChild(killEntityNode);
         testNode.addChild(everyNode);
 
         return testNode;

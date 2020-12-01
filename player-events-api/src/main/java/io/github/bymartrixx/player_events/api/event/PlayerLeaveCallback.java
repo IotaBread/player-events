@@ -9,7 +9,7 @@ import net.minecraft.util.ActionResult;
 public interface PlayerLeaveCallback {
     Event<PlayerLeaveCallback> EVENT = EventFactory.createArrayBacked(PlayerLeaveCallback.class, (listeners) -> (player, server) -> {
         for (PlayerLeaveCallback listener : listeners) {
-            ActionResult result = listener.leaveServer(player, server);
+            ActionResult result = listener.leave(player, server);
 
             if (result != ActionResult.PASS) {
                 return result;
@@ -19,5 +19,5 @@ public interface PlayerLeaveCallback {
         return  ActionResult.PASS;
     });
 
-    ActionResult leaveServer(ServerPlayerEntity player, MinecraftServer server);
+    ActionResult leave(ServerPlayerEntity player, MinecraftServer server);
 }

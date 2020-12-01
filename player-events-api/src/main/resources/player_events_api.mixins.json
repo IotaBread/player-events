@@ -5,8 +5,6 @@
   "mixins": [
     "PlayerDeathMixin",
     "PlayerJoinMixin",
-    "PlayerKillEntityMixin",
-    "PlayerKillPlayerMixin",
     "PlayerLeaveMixin"
   ],
   "client": [],
