@@ -55,11 +55,11 @@ public class Utils {
     }
 
     public static String messageAsString(String message, String separator) {
-        String[] messagePieces = message.split("%s");
+        String[] messagePieces = message.split("\\{player}");
 
         String result = String.join(separator, messagePieces);
 
-        if (message.charAt(message.length()-2) == '%' && message.charAt(message.length()-1) == 's') {
+        if (message.endsWith("{player}")) {
             result = result + separator;
         }
 
@@ -75,7 +75,7 @@ public class Utils {
     }
 
     public static MutableText messageAsText(String message, Text separator) {
-        String[] messagePieces = message.split("%s");
+        String[] messagePieces = message.split("\\{player}");
         MutableText result = new LiteralText("");
         MutableText[] pieces = new MutableText[messagePieces.length];
 
@@ -95,7 +95,7 @@ public class Utils {
             }
         }
 
-        if (message.charAt(message.length() - 2) == '%' && message.charAt(message.length() - 1) == 's') {
+        if (message.endsWith("{player}")) {
             result.append(separator);
         }
 
