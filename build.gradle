@@ -38,6 +38,9 @@ allprojects {
             name = "FabricMC"
             url = "https://maven.fabricmc.net"
         }
+        maven {
+            url = "https://dl.bintray.com/bymartrixx/maven"
+        }
     }
 
     dependencies {
@@ -47,6 +50,8 @@ allprojects {
         modImplementation "net.fabricmc:fabric-loader:${rootProject.loader_version}"
 
         modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+        modImplementation "io.github.bymartrixx.wdmcf:wdmcf:1.0.0"
     }
 
     processResources {
