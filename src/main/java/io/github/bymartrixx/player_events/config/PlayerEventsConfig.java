@@ -5,7 +5,6 @@ import io.github.bymartrixx.player_events.PlayerEvents;
 import io.github.bymartrixx.player_events.Utils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -15,8 +14,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.io.*;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class PlayerEventsConfig {
     public static class Manager {
@@ -105,7 +102,7 @@ public class PlayerEventsConfig {
     }
 
     public void runDeathActions(ServerPlayerEntity player) {
-        // TODO: add {source}?
+        // TODO: add ${source}?
         for (String action : deathActions.actions) {
             MinecraftServer server = player.getServer();
             if (server == null)
@@ -113,7 +110,7 @@ public class PlayerEventsConfig {
             if (action.charAt(0) == '/') {
                 server.getCommandManager().execute(server.getCommandSource(), Utils.replace(action, player));
             } else {
-                Utils.sendMessage(server, Utils.replaceAsText(action, player));
+                Utils.sendMessage(server, Utils.replaceGetText(action, player));
             }
         }
     }
@@ -123,7 +120,7 @@ public class PlayerEventsConfig {
             if (action.charAt(0) == '/') {
                 server.getCommandManager().execute(server.getCommandSource(), Utils.replace(action, player));
             } else {
-                Utils.sendMessage(server, Utils.replaceAsText(action, player));
+                Utils.sendMessage(server, Utils.replaceGetText(action, player));
             }
         }
     }
@@ -133,7 +130,7 @@ public class PlayerEventsConfig {
             if (action.charAt(0) == '/') {
                 server.getCommandManager().execute(server.getCommandSource(), Utils.replace(action, player));
             } else {
-                Utils.sendMessage(server, Utils.replaceAsText(action, player));
+                Utils.sendMessage(server, Utils.replaceGetText(action, player));
             }
         }
     }
@@ -145,8 +142,7 @@ public class PlayerEventsConfig {
                 string = Utils.replace(string, "${killedPlayer}", killedPlayer.getName().asString());
                 server.getCommandManager().execute(server.getCommandSource(), string);
             } else {
-                MutableText text = Utils.replaceAsText(action, player);
-                text = Utils.replaceAsText(text, "${killedPlayer}", killedPlayer.getDisplayName());
+                MutableText text = Utils.replaceGetText(action, new String[]{"${player}", "${killedPlayer}"}, new Text[]{player.getDisplayName(), killedPlayer.getDisplayName()});
                 Utils.sendMessage(server, text);
             }
         }
@@ -159,8 +155,7 @@ public class PlayerEventsConfig {
                 string = Utils.replace(string, "${killedEntity}", killedEntity.getName().asString());
                 server.getCommandManager().execute(server.getCommandSource(), string);
             } else {
-                MutableText text = Utils.replaceAsText(action, player);
-                text = Utils.replaceAsText(text, "${killedEntity}", killedEntity.getDisplayName());
+                MutableText text = Utils.replaceGetText(action, new String[]{"${player}", "${killedEntity}"}, new Text[]{player.getDisplayName(), killedEntity.getDisplayName()});
                 Utils.sendMessage(server, text);
             }
         }
@@ -171,10 +166,10 @@ public class PlayerEventsConfig {
         for (String action : deathActions.actions) {
             try {
                 ServerPlayerEntity player = source.getPlayer();
-                Text text = action.charAt(0) == '/' ? new LiteralText(Utils.replace(action, player)) : Utils.replaceAsText(action, player);
+                Text text = action.charAt(0) == '/' ? new LiteralText(Utils.replace(action, player)) : Utils.replaceGetText(action, player);
                 Utils.sendMessage(source, text);
             } catch (CommandSyntaxException e) {
-                Text text = action.charAt(0) == '/' ? new LiteralText(Utils.replace(action, "${player}", source.getName())) : Utils.replaceAsText(action, "${player}", source.getDisplayName());
+                Text text = action.charAt(0) == '/' ? new LiteralText(Utils.replace(action, "${player}", source.getName())) : Utils.replaceGetText(action, "${player}", source.getDisplayName());
                 Utils.sendMessage(source, text);
             }
         }
@@ -185,10 +180,10 @@ public class PlayerEventsConfig {
         for (String action : joinActions.actions) {
             try {
                 ServerPlayerEntity player = source.getPlayer();
-                Text text = action.charAt(0) == '/' ? new LiteralText(Utils.replace(action, player)) : Utils.replaceAsText(action, player);
+                Text text = action.charAt(0) == '/' ? new LiteralText(Utils.replace(action, player)) : Utils.replaceGetText(action, player);
                 Utils.sendMessage(source, text);
             } catch (CommandSyntaxException e) {
-                Text text = action.charAt(0) == '/' ? new LiteralText(Utils.replace(action, "${player}", source.getName())) : Utils.replaceAsText(action, "${player}", source.getDisplayName());
+                Text text = action.charAt(0) == '/' ? new LiteralText(Utils.replace(action, "${player}", source.getName())) : Utils.replaceGetText(action, "${player}", source.getDisplayName());
                 Utils.sendMessage(source, text);
             }
         }
@@ -199,10 +194,10 @@ public class PlayerEventsConfig {
         for (String action : leaveActions.actions) {
             try {
                 ServerPlayerEntity player = source.getPlayer();
-                Text text = action.charAt(0) == '/' ? new LiteralText(Utils.replace(action, player)) : Utils.replaceAsText(action, player);
+                Text text = action.charAt(0) == '/' ? new LiteralText(Utils.replace(action, player)) : Utils.replaceGetText(action, player);
                 Utils.sendMessage(source, text);
             } catch (CommandSyntaxException e) {
-                Text text = action.charAt(0) == '/' ? new LiteralText(Utils.replace(action, "${player}", source.getName())) : Utils.replaceAsText(action, "${player}", source.getDisplayName());
+                Text text = action.charAt(0) == '/' ? new LiteralText(Utils.replace(action, "${player}", source.getName())) : Utils.replaceGetText(action, "${player}", source.getDisplayName());
                 Utils.sendMessage(source, text);
             }
         }
@@ -219,8 +214,7 @@ public class PlayerEventsConfig {
                     string = Utils.replace(string, "${killedPlayer}", player.getName().asString());
                     text = new LiteralText(string);
                 } else {
-                    text = Utils.replaceAsText(action, player);
-                    text = Utils.replaceAsText(text, "${killedPlayer}", player.getDisplayName());
+                    text = Utils.replaceGetText(action, new String[]{"${player}", "${killedPlayer}"}, new Text[]{player.getDisplayName(), player.getDisplayName()});
                 }
                 Utils.sendMessage(source, text);
             } catch (CommandSyntaxException e) {
@@ -230,8 +224,7 @@ public class PlayerEventsConfig {
                     string = Utils.replace(string, "${killedPlayer}", source.getName());
                     text = new LiteralText(string);
                 } else {
-                    text = Utils.replaceAsText(action, "${player}", source.getDisplayName());
-                    text = Utils.replaceAsText(text, "${killedPlayer}", source.getDisplayName());
+                    text = Utils.replaceGetText(action, new String[]{"${player}", "${killedPlayer}"}, new Text[]{source.getDisplayName(), source.getDisplayName()});
                 }
                 Utils.sendMessage(source, text);
             }
@@ -240,7 +233,7 @@ public class PlayerEventsConfig {
 
     public void testKillEntityActions(ServerCommandSource source) {
         source.sendFeedback(new LiteralText("Kill entity actions:").formatted(Formatting.GRAY, Formatting.ITALIC), false);
-        for (String action : killPlayerActions.actions) {
+        for (String action : killEntityActions.actions) {
             try {
                 ServerPlayerEntity player = source.getPlayer();
                 MutableText text;
@@ -249,8 +242,7 @@ public class PlayerEventsConfig {
                     string = Utils.replace(string, "${killedPlayer}", "dummyEntity");
                     text = new LiteralText(string);
                 } else {
-                    text = Utils.replaceAsText(action, player);
-                    text = Utils.replaceAsText(text, "${killedPlayer}", new LiteralText("dummyEntity"));
+                    text = Utils.replaceGetText(action, new String[]{"${player}", "${killedPlayer}"}, new Text[]{player.getDisplayName(), new LiteralText("dummyEntity")});
                 }
                 Utils.sendMessage(source, text);
             } catch (CommandSyntaxException e) {
@@ -260,8 +252,7 @@ public class PlayerEventsConfig {
                     string = Utils.replace(string, "${killedPlayer}", "dummyEntity");
                     text = new LiteralText(string);
                 } else {
-                    text = Utils.replaceAsText(action, "${player}", source.getDisplayName());
-                    text = Utils.replaceAsText(text, "${killedPlayer}", new LiteralText("dummyEntity"));
+                    text = Utils.replaceGetText(action, new String[]{"${player}", "${killedPlayer}"}, new Text[]{source.getDisplayName(), new LiteralText("dummyEntity")});
                 }
                 Utils.sendMessage(source, text);
             }
