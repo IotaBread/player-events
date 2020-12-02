@@ -137,12 +137,24 @@ public class Utils {
         return text;
     }
 
+    public static void sendMessage(MinecraftServer server, ServerPlayerEntity player, Text message, boolean sendToEveryone) {
+        if (!sendToEveryone) {
+            sendMessage(player, message);
+        } else {
+            sendMessage(server, message);
+        }
+    }
+
     public static void sendMessage(MinecraftServer server, Text message) {
         server.sendSystemMessage(message, Util.NIL_UUID);
 
         for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
             player.sendSystemMessage(message, Util.NIL_UUID);
         }
+    }
+
+    public static void sendMessage(ServerPlayerEntity player, Text message) {
+        player.sendSystemMessage(message, Util.NIL_UUID);
     }
 
     public static void sendMessage(ServerCommandSource source, Text message) {

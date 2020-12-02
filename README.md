@@ -49,7 +49,7 @@ The config file is located in the config directory (`config/player_events.json`)
 }
 ```
 
-On the JSON file you can declare, under the `actions` array on each `<event>` object, what is going to be sent and/or executed on that event. You can also set these messages to be sent only to the player by setting `broadcast_to_everyone` to `false`.
+On the JSON file you can declare, under the `actions` array on each `<event>` object, what is going to be sent and/or executed on that event. You can also set these messages to be sent only to the player by setting `broadcast_to_everyone` to `false`, but this won't work with events like `leave` (because the player isn't in the server anymore).
 
 Every event has a `${player}` token, and each instance of this token will be replaced with the player that triggers the event. Other events have extra tokens that work the same way.
 As of 2.0.0, commands remain unsupported for these tokens and only `${player}` works correctly. This functionality will be added on a future release.

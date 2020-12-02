@@ -110,7 +110,7 @@ public class PlayerEventsConfig {
             if (action.charAt(0) == '/') {
                 server.getCommandManager().execute(server.getCommandSource(), Utils.replace(action, player));
             } else {
-                Utils.sendMessage(server, Utils.replaceGetText(action, player));
+                Utils.sendMessage(server, player, Utils.replaceGetText(action, player), death.broadcastToEveryone);
             }
         }
     }
@@ -120,7 +120,7 @@ public class PlayerEventsConfig {
             if (action.charAt(0) == '/') {
                 server.getCommandManager().execute(server.getCommandSource(), Utils.replace(action, player));
             } else {
-                Utils.sendMessage(server, Utils.replaceGetText(action, player));
+                Utils.sendMessage(server, player, Utils.replaceGetText(action, player), join.broadcastToEveryone);
             }
         }
     }
@@ -143,7 +143,7 @@ public class PlayerEventsConfig {
                 server.getCommandManager().execute(server.getCommandSource(), string);
             } else {
                 MutableText text = Utils.replaceGetText(action, new String[]{"${player}", "${killedEntity}"}, new Text[]{player.getDisplayName(), killedEntity.getDisplayName()});
-                Utils.sendMessage(server, text);
+                Utils.sendMessage(server, player, text, killEntity.broadcastToEveryone);
             }
         }
     }
@@ -156,7 +156,7 @@ public class PlayerEventsConfig {
                 server.getCommandManager().execute(server.getCommandSource(), string);
             } else {
                 MutableText text = Utils.replaceGetText(action, new String[]{"${player}", "${killedPlayer}"}, new Text[]{player.getDisplayName(), killedPlayer.getDisplayName()});
-                Utils.sendMessage(server, text);
+                Utils.sendMessage(server, player, text, killPlayer.broadcastToEveryone);
             }
         }
     }
@@ -250,7 +250,7 @@ public class PlayerEventsConfig {
     }
 
     public void testLeaveActions(ServerCommandSource source) {
-        String message = "Leave actions (" + (leave.broadcastToEveryone ? "Send to everyone" : "Send only to the player") + "):";
+        String message = "Leave actions:";
         source.sendFeedback(new LiteralText(message).formatted(Formatting.GRAY, Formatting.ITALIC), false);
         for (String action : leave.actions) {
             try {
