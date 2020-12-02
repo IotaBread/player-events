@@ -162,7 +162,8 @@ public class PlayerEventsConfig {
     }
 
     public void testDeathActions(ServerCommandSource source) {
-        source.sendFeedback(new LiteralText("Death actions:").formatted(Formatting.GRAY, Formatting.ITALIC), false);
+        String message = "Death actions (" + (deathActions.broadcastToEveryone ? "Send to everyone" : "Send only to the player") + "):";
+        source.sendFeedback(new LiteralText(message).formatted(Formatting.GRAY, Formatting.ITALIC), false);
         for (String action : deathActions.actions) {
             try {
                 ServerPlayerEntity player = source.getPlayer();
@@ -176,7 +177,8 @@ public class PlayerEventsConfig {
     }
 
     public void testJoinActions(ServerCommandSource source) {
-        source.sendFeedback(new LiteralText("Join actions:").formatted(Formatting.GRAY, Formatting.ITALIC), false);
+        String message = "Join actions (" + (joinActions.broadcastToEveryone ? "Send to everyone" : "Send only to the player") + "):";
+        source.sendFeedback(new LiteralText(message).formatted(Formatting.GRAY, Formatting.ITALIC), false);
         for (String action : joinActions.actions) {
             try {
                 ServerPlayerEntity player = source.getPlayer();
@@ -190,7 +192,8 @@ public class PlayerEventsConfig {
     }
 
     public void testLeaveActions(ServerCommandSource source) {
-        source.sendFeedback(new LiteralText("Leave actions:").formatted(Formatting.GRAY, Formatting.ITALIC), false);
+        String message = "Leave actions (" + (leaveActions.broadcastToEveryone ? "Send to everyone" : "Send only to the player") + "):";
+        source.sendFeedback(new LiteralText(message).formatted(Formatting.GRAY, Formatting.ITALIC), false);
         for (String action : leaveActions.actions) {
             try {
                 ServerPlayerEntity player = source.getPlayer();
@@ -204,7 +207,8 @@ public class PlayerEventsConfig {
     }
 
     public void testKillPlayerActions(ServerCommandSource source) {
-        source.sendFeedback(new LiteralText("Kill player actions:").formatted(Formatting.GRAY, Formatting.ITALIC), false);
+        String message = "Kill player actions (" + (killPlayerActions.broadcastToEveryone ? "Send to everyone" : "Send only to the player") + "):";
+        source.sendFeedback(new LiteralText(message).formatted(Formatting.GRAY, Formatting.ITALIC), false);
         for (String action : killPlayerActions.actions) {
             try {
                 ServerPlayerEntity player = source.getPlayer();
@@ -232,7 +236,8 @@ public class PlayerEventsConfig {
     }
 
     public void testKillEntityActions(ServerCommandSource source) {
-        source.sendFeedback(new LiteralText("Kill entity actions:").formatted(Formatting.GRAY, Formatting.ITALIC), false);
+        String message = "Kill entity actions (" + (killEntityActions.broadcastToEveryone ? "Send to everyone" : "Send only to the player") + "):";
+        source.sendFeedback(new LiteralText(message).formatted(Formatting.GRAY, Formatting.ITALIC), false);
         for (String action : killEntityActions.actions) {
             try {
                 ServerPlayerEntity player = source.getPlayer();
@@ -259,7 +264,7 @@ public class PlayerEventsConfig {
         }
     }
 
-    public void testEveryActionGroup(ServerCommandSource source) {
+    public void testEveryActionGroup(ServerCommandSource source) { // TODO U W U
         testDeathActions(source);
         testJoinActions(source);
         testLeaveActions(source);
