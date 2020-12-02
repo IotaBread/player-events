@@ -1,4 +1,4 @@
-package io.github.bymartrixx.player_events.api.event;
+package io.github.bymartrixx.playerevents.api.event;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;

@@ -1,6 +1,6 @@
-package io.github.bymartrixx.player_events.api.mixin;
+package io.github.bymartrixx.playerevents.api.mixin;
 
-import io.github.bymartrixx.player_events.api.event.PlayerKillPlayerCallback;
+import io.github.bymartrixx.playerevents.api.event.PlayerKillPlayerCallback;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;

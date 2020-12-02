@@ -1,6 +1,6 @@
-package io.github.bymartrixx.player_events.api.mixin;
+package io.github.bymartrixx.playerevents.api.mixin;
 
-import io.github.bymartrixx.player_events.api.event.PlayerJoinCallback;
+import io.github.bymartrixx.playerevents.api.event.PlayerJoinCallback;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -17,6 +17,12 @@ public class PlayerJoinMixin {
         ActionResult result = PlayerJoinCallback.EVENT.invoker().joinServer(player, player.getServer());
 
         if (result == ActionResult.FAIL) {
+            info.cancel();
+        }
+
+        ActionResult result1 = io.github.bymartrixx.player_events.api.event.PlayerJoinCallback.EVENT.invoker().joinServer(player, player.getServer());
+
+        if (result1 == ActionResult.FAIL) {
             info.cancel();
         }
     }

@@ -1,4 +1,4 @@
-package io.github.bymartrixx.player_events;
+package io.github.bymartrixx.playerevents;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

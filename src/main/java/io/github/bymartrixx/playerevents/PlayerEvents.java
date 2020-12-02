@@ -1,11 +1,11 @@
-package io.github.bymartrixx.player_events;
+package io.github.bymartrixx.playerevents;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import io.github.bymartrixx.player_events.api.event.*;
-import io.github.bymartrixx.player_events.command.PlayerEventsCommand;
-import io.github.bymartrixx.player_events.config.PlayerEventsConfig;
+import io.github.bymartrixx.playerevents.api.event.*;
+import io.github.bymartrixx.playerevents.command.PlayerEventsCommand;
+import io.github.bymartrixx.playerevents.config.PlayerEventsConfig;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.util.ActionResult;

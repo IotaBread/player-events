@@ -1,8 +1,8 @@
-package io.github.bymartrixx.player_events.config;
+package io.github.bymartrixx.playerevents.config;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import io.github.bymartrixx.player_events.PlayerEvents;
-import io.github.bymartrixx.player_events.Utils;
+import io.github.bymartrixx.playerevents.PlayerEvents;
+import io.github.bymartrixx.playerevents.Utils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
