@@ -1,10 +1,10 @@
 package io.github.bymartrixx.player_events.command;
 
 import com.mojang.brigadier.tree.LiteralCommandNode;
-
 import io.github.bymartrixx.player_events.PlayerEvents;
-import static net.minecraft.server.command.CommandManager.*;
 import net.minecraft.server.command.ServerCommandSource;
+
+import static net.minecraft.server.command.CommandManager.literal;
 
 public class TestCommand {
     public static LiteralCommandNode<ServerCommandSource> getNode() {

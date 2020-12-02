@@ -15,7 +15,7 @@ import org.apache.logging.log4j.Logger;
 
 public class PlayerEvents implements DedicatedServerModInitializer {
 
-    public static Logger LOGGER = LogManager.getLogger();
+    public static final Logger LOGGER = LogManager.getLogger();
     public static final Gson GSON = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).setPrettyPrinting().create();
 
     public static final String MOD_ID = "player_events";
