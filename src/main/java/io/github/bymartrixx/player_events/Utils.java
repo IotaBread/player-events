@@ -10,9 +10,11 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
 
+import java.util.regex.Pattern;
+
 public class Utils {
     public static String replace(String string, PlayerEntity player) {
-        return replace(string, "{player}", player.getName().asString());
+        return replace(string, "${player}", player.getName().asString());
     }
 
     public static String replace(String string, String regex, String replacement) {
@@ -27,11 +29,11 @@ public class Utils {
     }
 
     public static MutableText replaceAsText(String string, PlayerEntity player) {
-        return replaceAsText(string, "{player}", player.getDisplayName());
+        return replaceAsText(string, "${player}", player.getDisplayName());
     }
 
     public static MutableText replaceAsText(String string, String regex, Text replacement) {
-        String[] strings = string.split(regex);
+        String[] strings = string.split(Pattern.quote(regex));
         MutableText result = new LiteralText("");
         MutableText[] texts = new MutableText[strings.length];
 
@@ -58,8 +60,8 @@ public class Utils {
         return result;
     }
 
-    public static MutableText replaceAsText(MutableText text, String regex, Text replacement) {
-        String[] strings = text.asString().split(regex);
+    public static MutableText replaceAsText(MutableText text, String regex, Text replacement) { // TODO: Change method to keep formatting
+        String[] strings = text.getString().split(Pattern.quote(regex));
 
         MutableText result = new LiteralText("");
         MutableText[] texts = new MutableText[strings.length];
@@ -80,7 +82,7 @@ public class Utils {
             }
         }
 
-        if (text.asString().endsWith(regex)) {
+        if (text.getString().endsWith(regex)) {
             result.append(replacement);
         }
 
