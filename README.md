@@ -5,42 +5,74 @@
 
 <a href='https://www.curseforge.com/minecraft/mc-mods/fabric-api'><img src='https://i.imgur.com/Ol1Tcf8.png' width="150"></a>
 
-A mod that executes and sends configurable commands and messages respectively when a player does something.
+**Note: this mod is server side only and won't work on clients**
 
-The config file is located in the config directory (`<root>/config/player_events.json`) and looks like this:
+A Fabric mod that executes and sends configurable commands and messages respectively on certain events triggered by a player, such as Dying, Joining a server, Killing another player, etc.
 
-```
+The config file is located in the config directory (`config/player_events.json`) and looks like this:
+
+```JSON
 {
-  "death_actions": [
-    "%s just died! F"
-  ],
-  "join_actions": [
-    "Welcome %s",
-    "/say Hello %s"
-  ],
-  "leave_actions": [
-    "Goodbye %s!",
-    "/say Hope to see you soon %s"
-  ]
+  "death": {
+    "actions": [
+      "${player} just died! F"
+    ],
+    "broadcast_to_everyone": true
+  },
+  "join": {
+    "actions": [
+      "Welcome ${player}",
+      "/say Hello ${player}"
+    ],
+    "broadcast_to_everyone": true
+  },
+  "kill_entity": {
+    "actions": [
+      "${player} killed ${killedEntity}"
+    ],
+    "broadcast_to_everyone": true
+  },
+  "kill_player": {
+    "actions": [
+      "${player} killed ${killedPlayer}",
+      "F ${killedPlayer}"
+    ],
+    "broadcast_to_everyone": true
+  },
+  "leave": {
+    "actions": [
+      "Goodbye ${player}!",
+      "/say Hope to see you soon ${player}"
+    ],
+    "broadcast_to_everyone": true
+  }
 }
 ```
 
-The JSON file is declaring, under the `<event>_actions` array, what it's going to be sent and/or executed on the `<event>`.
-Every instance of `%s` will be replaced with the player's name. Commands on the config must start with `/`.
+On the JSON file you can declare, under the `actions` array on each `<event>` object, what is going to be sent and/or executed on that event. You can also set these messages to be sent only to the player by setting `broadcast_to_everyone` to `false`, but this won't work with events like `leave` (because the player isn't in the server anymore).
 
-Supports [color codes](https://minecraft.gamepedia.com/Formatting_codes#Color_codes) too!
+Every event has a `${player}` token, and each instance of this token will be replaced with the player that triggers the event. Other events have extra tokens that work the same way.
+As of 2.0.0, commands remain unsupported for these tokens and only `${player}` works correctly. This functionality will be added on a future release.
+
+**Supports [color codes](https://minecraft.gamepedia.com/Formatting_codes#Color_codes) too!**
 
 Use `/pe reload` or `/player_events reload` to reload the mod config.
 
 You can use `/pe test <event>` or `/player_events test <event>` to test the actions on a specific event, or use `/pe test *` to test every event.
 
-### Current supported events
+### 2.0.0 supported events
 * `death` - Executed when a player dies.
 * `join` - Executed when a player joins.
+* `kill_entity` - Executed when a player kills an entity. 
+  * **Extra tokens:**
+  * `${killedEntity}` - the killed entity.
+* `kill_player` - Executed when a player kills another player.
+  * **Extra tokens:**
+  * `${killedPlayer}` - the killed player.
 * `leave` - Executed when a player leaves.
 
 ## Developing
-This part is intended for developers.
+This part is for mod developers that would like to use the mod api.
 
 ### Compiling
 
@@ -59,33 +91,46 @@ repositories {
 }
 
 dependencies {
-    modImplementation "io.github.bymartrixx.player_events.api:player-events-api:${project.player_events_api_version}"
+    // Using the version from the gradle.properties
+    modImplementation "io.github.bymartrixx.playerevents:player-events-api:${project.player_events_api_version}"
+
+    // Directly setting the version
+    modImplementation "io.github.bymartrixx.playerevents:player-events-api:2.0.0"
 }
 ```
-And this to your `gradle.properties`
+Add this to your `gradle.properties` (Only if you aren't directly setting the version to the build.gradle file):
 ```properties
-player_events_api_version = 1.0.0
+player_events_api_version = 2.0.0
 ```
 
-Also, this to your `fabric.mod.json`:
+Also, add this to your `fabric.mod.json`:
 ```json
 {
   "depends": {
-    "player_events_api": ">=1.0.0"
+    "player_events_api": ">=2.0.0"
   }
 }
 ```
 
 #### Events
-* `death` - `io.github.bymartrixx.player_events.api.event.PlayerDeathCallback.EVENT`
-* `join` - `io.github.bymartrixx.player_events.api.event.PlayerJoinCallback.EVENT`
-* `leave` - `io.github.bymartrixx.player_events.api.event.PlayerLeaveCallback.EVENT`
+* `death` - `io.github.bymartrixx.playerevents.api.event.PlayerDeathCallback.EVENT`
+* `join` - `io.github.bymartrixx.playerevents.api.event.PlayerJoinCallback.EVENT`
+* `kill_entity` - `io.github.bymartrixx.playerevents.api.event.PlayerKillEntityCallback.EVENT`
+* `kill_player` - `io.github.bymartrixx.playerevents.api.event.PlayerKillPlayerCallback.EVENT`
+* `leave` - `io.github.bymartrixx.playerevents.api.event.PlayerLeaveCallback.EVENT`
+
+**Note: The package `io.github.bymartrixx.player_events.api` has been moved to `io.github.bymartrixx.playerevents.api`. 1.0.0 classes still work but are now deprecated and will likely be removed in a next release. Please update your classes ASAP**
 
 #### Using the events
-```JAVA
-public class FooClass {
-    public void fooMethod() {
+```java
+public class FooMod implements DedicatedServerModInitializer {
+    public void onInitializeServer() {
         PlayerDeathCallback.EVENT.register((player, source) -> {
+            // Do something
+            return ActionResult.PASS;
+        });
+
+        PlayerKillEntityCallback.EVENT.register((player, killedEntity) -> {
             // Do something
             return ActionResult.PASS;
         });
