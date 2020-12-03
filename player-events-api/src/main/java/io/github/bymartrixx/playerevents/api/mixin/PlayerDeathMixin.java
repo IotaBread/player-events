@@ -13,13 +13,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class PlayerDeathMixin {
     @Inject(at = @At(value = "TAIL", target = "Lnet/minecraft/world/World;sendEntityStatus(Lnet/minecraft/entity/Entity;B)V"), method = "onDeath", cancellable = true)
     private  void onPlayerDeath(DamageSource source, CallbackInfo info) {
-        ActionResult result = PlayerDeathCallback.EVENT.invoker().interact((ServerPlayerEntity) (Object) this, source);
+        ActionResult result = PlayerDeathCallback.EVENT.invoker().kill((ServerPlayerEntity) (Object) this, source);
 
         if (result == ActionResult.FAIL) {
             info.cancel();
         }
 
-        ActionResult result1 = io.github.bymartrixx.player_events.api.event.PlayerDeathCallback.EVENT.invoker().kill((ServerPlayerEntity) (Object) this, source);
+        ActionResult result1 = io.github.bymartrixx.player_events.api.event.PlayerDeathCallback.EVENT.invoker().interact((ServerPlayerEntity) (Object) this, source);
 
         if (result1 == ActionResult.FAIL) {
             info.cancel();

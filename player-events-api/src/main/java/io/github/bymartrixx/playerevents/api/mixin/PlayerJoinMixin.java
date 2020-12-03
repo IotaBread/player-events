@@ -14,13 +14,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class PlayerJoinMixin {
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerEntity;onSpawn()V"), method = "onPlayerConnect", cancellable = true)
     private  void onPlayerJoin(ClientConnection connection, ServerPlayerEntity player, CallbackInfo info) {
-        ActionResult result = PlayerJoinCallback.EVENT.invoker().join(player, player.getServer());
+        ActionResult result = PlayerJoinCallback.EVENT.invoker().joinServer(player, player.getServer());
 
         if (result == ActionResult.FAIL) {
             info.cancel();
         }
 
-        ActionResult result1 = io.github.bymartrixx.player_events.api.event.PlayerJoinCallback.EVENT.invoker().joinServer(player, player.getServer());
+        ActionResult result1 = io.github.bymartrixx.player_events.api.event.PlayerJoinCallback.EVENT.invoker().join(player, player.getServer());
 
         if (result1 == ActionResult.FAIL) {
             info.cancel();
