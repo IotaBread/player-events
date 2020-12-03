@@ -3,13 +3,14 @@
   "id": "player_events",
   "version": "${version}",
   "name": "Player Events",
-  "description": "A mod that sends a configurable command/message when a player joins, leaves and dies.",
+  "description": "A mod that executes and sends configurable commands and messages respectively on certain events triggered by a player.",
   "authors": [
     "ByMartrixx"
   ],
   "contributors": [],
   "contact": {
-    "sources": "https://github.com/ByMartrixx/join-messages/"
+    "sources": "https://github.com/ByMartrixx/player-events",
+    "issues": "https://github.com/ByMartrixx/player-events/issues"
   },
   "license": "MIT",
   "icon": "assets/player_events/icon.png",
@@ -18,7 +19,7 @@
     "main": [],
     "client": [],
     "server": [
-      "io.github.bymartrixx.player_events.PlayerEvents"
+      "io.github.bymartrixx.playerevents.PlayerEvents"
     ]
   },
   "mixins": [],

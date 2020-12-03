@@ -1,4 +1,4 @@
-group = "${rootProject.group}.api"
+group = "${rootProject.group}.playerevents"
 
 bintray {
     user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')

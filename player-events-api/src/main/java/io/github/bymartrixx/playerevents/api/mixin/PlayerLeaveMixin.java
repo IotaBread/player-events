@@ -1,6 +1,6 @@
-package io.github.bymartrixx.player_events.api.mixin;
+package io.github.bymartrixx.playerevents.api.mixin;
 
-import io.github.bymartrixx.player_events.api.event.PlayerLeaveCallback;
+import io.github.bymartrixx.playerevents.api.event.PlayerLeaveCallback;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -21,6 +21,12 @@ public class PlayerLeaveMixin {
         ActionResult result = PlayerLeaveCallback.EVENT.invoker().leave(this.player, this.player.getServer());
 
         if (result == ActionResult.FAIL) {
+            info.cancel();
+        }
+
+        ActionResult result1 = io.github.bymartrixx.player_events.api.event.PlayerLeaveCallback.EVENT.invoker().leaveServer(this.player, this.player.getServer());
+
+        if (result1 == ActionResult.FAIL) {
             info.cancel();
         }
     }

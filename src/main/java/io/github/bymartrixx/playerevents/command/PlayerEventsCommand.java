@@ -1,29 +1,25 @@
-package io.github.bymartrixx.player_events.command;
+package io.github.bymartrixx.playerevents.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-
-import io.github.bymartrixx.player_events.PlayerEvents;
-import static net.minecraft.server.command.CommandManager.*;
+import io.github.bymartrixx.playerevents.PlayerEvents;
 import net.minecraft.server.command.ServerCommandSource;
+
+import static net.minecraft.server.command.CommandManager.literal;
 
 public class PlayerEventsCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         LiteralCommandNode<ServerCommandSource> node = registerMain(dispatcher);
 
         dispatcher.register(literal(PlayerEvents.MOD_ID)
-                .requires((ServerCommandSource) -> {
-                    return ServerCommandSource.hasPermissionLevel(2);
-                })
+                .requires((ServerCommandSource) -> ServerCommandSource.hasPermissionLevel(2))
                 .redirect(node)
         );
     }
 
     public static LiteralCommandNode<ServerCommandSource> registerMain(CommandDispatcher<ServerCommandSource> dispatcher) {
         LiteralCommandNode<ServerCommandSource> playerEventsNode = literal("pe")
-                .requires((ServerCommandSource) -> {
-                    return ServerCommandSource.hasPermissionLevel(2);
-                })
+                .requires((ServerCommandSource) -> ServerCommandSource.hasPermissionLevel(2))
                 .build();
 
         LiteralCommandNode<ServerCommandSource> reloadNode = ReloadCommand.getNode();

@@ -1,10 +1,10 @@
-package io.github.bymartrixx.player_events.command;
+package io.github.bymartrixx.playerevents.command;
 
 import com.mojang.brigadier.tree.LiteralCommandNode;
-
-import io.github.bymartrixx.player_events.config.PlayerEventsConfigManager;
-import static net.minecraft.server.command.CommandManager.*;
+import io.github.bymartrixx.playerevents.PlayerEvents;
 import net.minecraft.server.command.ServerCommandSource;
+
+import static net.minecraft.server.command.CommandManager.literal;
 
 public class TestCommand {
     public static LiteralCommandNode<ServerCommandSource> getNode() {
@@ -12,28 +12,42 @@ public class TestCommand {
 
         LiteralCommandNode<ServerCommandSource> joinNode = literal("join")
                 .executes(context -> {
-                    PlayerEventsConfigManager.getConfig().testJoinActions(context.getSource());
+                    PlayerEvents.CONFIG.testJoinActions(context.getSource());
                     return 1;
                 })
                 .build();
 
         LiteralCommandNode<ServerCommandSource> leaveNode = literal("leave")
                 .executes(context -> {
-                    PlayerEventsConfigManager.getConfig().testLeaveActions(context.getSource());
+                    PlayerEvents.CONFIG.testLeaveActions(context.getSource());
                     return 1;
                 })
                 .build();
 
         LiteralCommandNode<ServerCommandSource> deathNode = literal("death")
                 .executes(context -> {
-                    PlayerEventsConfigManager.getConfig().testDeathActions(context.getSource());
+                    PlayerEvents.CONFIG.testDeathActions(context.getSource());
+                    return 1;
+                })
+                .build();
+
+        LiteralCommandNode<ServerCommandSource> killPlayerNode = literal("kill_player")
+                .executes(context -> {
+                    PlayerEvents.CONFIG.testKillPlayerActions(context.getSource());
+                    return 1;
+                })
+                .build();
+
+        LiteralCommandNode<ServerCommandSource> killEntityNode = literal("kill_entity")
+                .executes(context -> {
+                    PlayerEvents.CONFIG.testKillEntityActions(context.getSource());
                     return 1;
                 })
                 .build();
 
         LiteralCommandNode<ServerCommandSource> everyNode = literal("*")
                 .executes(context -> {
-                    PlayerEventsConfigManager.getConfig().testEveryActionGroup(context.getSource());
+                    PlayerEvents.CONFIG.testEveryActionGroup(context.getSource());
                     return 1;
                 })
                 .build();
@@ -41,6 +55,8 @@ public class TestCommand {
         testNode.addChild(joinNode);
         testNode.addChild(leaveNode);
         testNode.addChild(deathNode);
+        testNode.addChild(killPlayerNode);
+        testNode.addChild(killEntityNode);
         testNode.addChild(everyNode);
 
         return testNode;
