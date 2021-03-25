@@ -2,7 +2,7 @@ package io.github.bymartrixx.playerevents;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.entity.player.PlayerEntity;
+import eu.pb4.placeholders.PlaceholderAPI;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -16,11 +16,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Utils {
-    public static String replace(String string, PlayerEntity player) {
-        return replace(string, "${player}", player.getName().asString());
+    public static String replacePlaceholderString(String string, ServerPlayerEntity player) {
+        String text = replacePlaceholderString(string, "${player}", player.getName().asString());
+        return PlaceholderAPI.parseString(text, player);
     }
 
-    public static String replace(String string, String token, String replacement) {
+    public static String replacePlaceholderString(String string, String token, String replacement) {
         String[] strings = string.split(Pattern.quote(token));
         String result = String.join(replacement, strings);
 
@@ -31,11 +32,12 @@ public class Utils {
         return result;
     }
 
-    public static MutableText replaceGetText(String string, PlayerEntity player) {
-        return replaceGetText(string, "${player}", player.getDisplayName());
+    public static Text replacePlaceholderText(String string, ServerPlayerEntity player) {
+        MutableText text = replacePlaceholderText(string, "${player}", player.getDisplayName());
+        return PlaceholderAPI.parseText(text, player);
     }
 
-    public static MutableText replaceGetText(String string, String token, Text replacement) {
+    public static MutableText replacePlaceholderText(String string, String token, Text replacement) {
         String[] strings = string.split(Pattern.quote(token));
         MutableText result = new LiteralText("");
         MutableText[] texts = new MutableText[strings.length];
@@ -63,6 +65,7 @@ public class Utils {
         return result;
     }
 
+    // Thanks, past me, for leaving this javadoc, because I don't understand the code lol
     /**
      * What this does is the following:
      *
@@ -80,7 +83,7 @@ public class Utils {
      * @param replacements The value to replace for each token. Example: 120, "Test"
      * @return the formatted text
      */
-    public static MutableText replaceGetText(String string, String[] tokens, Text[] replacements) { // Cursed solution
+    public static MutableText replacePlaceholderText(String string, String[] tokens, Text[] replacements) { // Cursed solution
         if (replacements.length < 1 || tokens.length != replacements.length)
             return null;
 

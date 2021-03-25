@@ -94,8 +94,8 @@ public class PlayerEventsConfig {
 
     private static void executeBasicAction(String action, MinecraftServer server, ServerPlayerEntity player, boolean sendToEveryone) {
         executeAction(action,
-                action1 -> server.getCommandManager().execute(server.getCommandSource(), Utils.replace(action1, player)),
-                action1 -> Utils.sendMessage(server, player, Utils.replaceGetText(action1, player), sendToEveryone));
+                action1 -> server.getCommandManager().execute(server.getCommandSource(), Utils.replacePlaceholderString(action1, player)),
+                action1 -> Utils.sendMessage(server, player, Utils.replacePlaceholderText(action1, player), sendToEveryone));
     }
 
     private static void executeBasicAction(String action, MinecraftServer server, ServerPlayerEntity player) {
@@ -115,16 +115,16 @@ public class PlayerEventsConfig {
         return testAction(action, action1 -> {
             try {
                 ServerPlayerEntity player = source.getPlayer();
-                return new LiteralText(Utils.replace(action1, player));
+                return new LiteralText(Utils.replacePlaceholderString(action1, player));
             } catch (CommandSyntaxException e) {
-                return new LiteralText(Utils.replace(action1, "${player}", source.getName()));
+                return new LiteralText(Utils.replacePlaceholderString(action1, "${player}", source.getName()));
             }
         }, action1 -> {
             try {
                 ServerPlayerEntity player = source.getPlayer();
-                return Utils.replaceGetText(action1, player);
+                return Utils.replacePlaceholderText(action1, player);
             } catch (CommandSyntaxException e) {
-                return Utils.replaceGetText(action, "${player}", source.getDisplayName());
+                return Utils.replacePlaceholderText(action, "${player}", source.getDisplayName());
             }
         });
     }
@@ -176,11 +176,11 @@ public class PlayerEventsConfig {
     public void runKillEntityActions(MinecraftServer server, ServerPlayerEntity player, Entity killedEntity) {
         for (String action : this.killEntity.actions) {
             executeAction(action, action1 -> {
-                String command = Utils.replace(action1, player);
-                command = Utils.replace(command, "${killedEntity}", killedEntity.getName().asString());
+                String command = Utils.replacePlaceholderString(action1, player);
+                command = Utils.replacePlaceholderString(command, "${killedEntity}", killedEntity.getName().asString());
                 server.getCommandManager().execute(server.getCommandSource(), command);
             }, action1 -> {
-                MutableText text = Utils.replaceGetText(action1, new String[]{"${player}", "${killedEntity}"}, new Text[]{player.getDisplayName(), killedEntity.getDisplayName()});
+                MutableText text = Utils.replacePlaceholderText(action1, new String[]{"${player}", "${killedEntity}"}, new Text[]{player.getDisplayName(), killedEntity.getDisplayName()});
                 Utils.sendMessage(server, player, text, this.killEntity.broadcastToEveryone);
             });
         }
@@ -189,11 +189,11 @@ public class PlayerEventsConfig {
     public void runKillPlayerActions(MinecraftServer server, ServerPlayerEntity player, ServerPlayerEntity killedPlayer) {
         for (String action : this.killPlayer.actions) {
             executeAction(action, action1 -> {
-                String command = Utils.replace(action1, player);
-                command = Utils.replace(command, "${killedPlayer}", killedPlayer.getName().asString());
+                String command = Utils.replacePlaceholderString(action1, player);
+                command = Utils.replacePlaceholderString(command, "${killedPlayer}", killedPlayer.getName().asString());
                 server.getCommandManager().execute(server.getCommandSource(), command);
             }, action1 -> {
-                MutableText text = Utils.replaceGetText(action1, new String[]{"${player}", "${killedPlayer}"}, new Text[]{player.getDisplayName(), killedPlayer.getDisplayName()});
+                MutableText text = Utils.replacePlaceholderText(action1, new String[]{"${player}", "${killedPlayer}"}, new Text[]{player.getDisplayName(), killedPlayer.getDisplayName()});
                 Utils.sendMessage(server, player, text, this.killPlayer.broadcastToEveryone);
             });
         }
@@ -226,20 +226,20 @@ public class PlayerEventsConfig {
                 String command;
                 try {
                     ServerPlayerEntity player = source.getPlayer();
-                    command = Utils.replace(action1, player);
+                    command = Utils.replacePlaceholderString(action1, player);
                 } catch (CommandSyntaxException e) {
-                    command = Utils.replace(action1, "${player}", source.getName());
+                    command = Utils.replacePlaceholderString(action1, "${player}", source.getName());
                 }
 
-                command = Utils.replace(command, "${killedEntity}", "dummyEntity");
+                command = Utils.replacePlaceholderString(command, "${killedEntity}", "dummyEntity");
 
                 return new LiteralText(command);
             }, action1 -> {
                 try {
                     ServerPlayerEntity player = source.getPlayer();
-                    return Utils.replaceGetText(action1, new String[]{"${player}", "${killedEntity}"}, new Text[]{player.getDisplayName(), new LiteralText("dummyEntity")});
+                    return Utils.replacePlaceholderText(action1, new String[]{"${player}", "${killedEntity}"}, new Text[]{player.getDisplayName(), new LiteralText("dummyEntity")});
                 } catch (CommandSyntaxException e) {
-                    return Utils.replaceGetText(action1, new String[]{"${player}", "${killedEntity}"}, new Text[]{source.getDisplayName(), new LiteralText("dummyEntity")});
+                    return Utils.replacePlaceholderText(action1, new String[]{"${player}", "${killedEntity}"}, new Text[]{source.getDisplayName(), new LiteralText("dummyEntity")});
                 }
             }));
         }
@@ -254,20 +254,20 @@ public class PlayerEventsConfig {
                 String command;
                 try {
                     ServerPlayerEntity player = source.getPlayer();
-                    command = Utils.replace(action1, player);
-                    command = Utils.replace(command, "${killedPlayer}", player.getName().asString());
+                    command = Utils.replacePlaceholderString(action1, player);
+                    command = Utils.replacePlaceholderString(command, "${killedPlayer}", player.getName().asString());
                 } catch (CommandSyntaxException e) {
-                    command = Utils.replace(action1, "${player}", source.getName());
-                    command = Utils.replace(command, "${killedPlayer}", source.getName());
+                    command = Utils.replacePlaceholderString(action1, "${player}", source.getName());
+                    command = Utils.replacePlaceholderString(command, "${killedPlayer}", source.getName());
                 }
 
                 return new LiteralText(command);
             }, action1 -> {
                 try {
                     ServerPlayerEntity player = source.getPlayer();
-                    return Utils.replaceGetText(action, new String[]{"${player}", "${killedPlayer}"}, new Text[]{player.getDisplayName(), player.getDisplayName()});
+                    return Utils.replacePlaceholderText(action, new String[]{"${player}", "${killedPlayer}"}, new Text[]{player.getDisplayName(), player.getDisplayName()});
                 } catch (CommandSyntaxException e) {
-                    return Utils.replaceGetText(action, new String[]{"${player}", "${killedPlayer}"}, new Text[]{source.getDisplayName(), source.getDisplayName()});
+                    return Utils.replacePlaceholderText(action, new String[]{"${player}", "${killedPlayer}"}, new Text[]{source.getDisplayName(), source.getDisplayName()});
                 }
             }));
         }
