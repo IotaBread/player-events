@@ -1,28 +1,5 @@
 group = "${rootProject.group}.playerevents"
 
-bintray {
-    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
-    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_KEY')
-    publications = ["mavenJava"]
-    publish = true
-    pkg {
-        repo = 'maven'
-        name = 'player_events_api'
-        licenses = ['MIT']
-        vcsUrl = 'https://github.com/ByMartrixx/player-events.git'
-        version {
-            released = new Date()
-            githubRepo = 'ByMartrixx/join_messages'
-            websiteUrl = 'https://github.com/ByMartrixx/player-events'
-            issueTrackerUrl = 'https://github.com/ByMartrixx/player-events/issues'
-            vcsUrl = 'https://github.com/ByMartrixx/player-events.git'
-            gpg {
-                sign = true
-            }
-        }
-    }
-}
-
 publishing {
     publications {
         mavenJava(MavenPublication) {
