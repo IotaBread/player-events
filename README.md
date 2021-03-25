@@ -83,6 +83,7 @@ This part is for mod developers that would like to use the mod api.
 ### API
 #### Adding the API as a dependency of your mod
 Add the following text to your `build.gradle`:
+##### Starting from May 1st you won't be able to use the api this way
 ```groovy
 repositories {
     maven {
