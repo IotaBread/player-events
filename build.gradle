@@ -16,13 +16,13 @@ allprojects {
 
     repositories {
         maven {
-            name = 'FabricMC'
-            url = 'https://maven.fabricmc.net'
+            name 'FabricMC'
+            url 'https://maven.fabricmc.net'
         }
 
         // TODO: Remove
         maven {
-            url = 'https://dl.bintray.com/bymartrixx/maven'
+            url 'https://dl.bintray.com/bymartrixx/maven'
         }
     }
 
@@ -83,10 +83,20 @@ subprojects {
     archivesBaseName = project.name
 }
 
-// Add subprojects as dependency of root project
+repositories {
+    maven {
+        name 'JitPack'
+        url 'https://jitpack.io'
+    }
+}
+
 dependencies {
+    // Add subprojects as dependency of root project
     api project(':player-events-api')
     include project(':player-events-api')
+
+    // FabricPlaceholderApi
+    modImplementation include('com.github.Patbox:FabricPlaceholderAPI:0.3.0')
 }
 
 subprojects.each {
