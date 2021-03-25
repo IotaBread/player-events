@@ -85,13 +85,12 @@ subprojects {
 
 // Add subprojects as dependency of root project
 dependencies {
-    afterEvaluate {
-        subprojects.each {
-            api it
-            include it
-            remapJar.dependsOn("${it}:remapJar")
-        }
-    }
+    api project(':player-events-api')
+    include project(':player-events-api')
+}
+
+subprojects.each {
+    rootProject.remapJar.dependsOn(it.remapJar)
 }
 
 publishing {
