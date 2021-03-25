@@ -8,11 +8,13 @@ plugins {
 archivesBaseName = project.archives_base_name
 group = project.maven_group
 
+boolean isBuild = System.getenv('GITHUB_WORKFLOW') == 'build'
+version = !isBuild ? project.mod_version : "${project.mod_version}+build.${System.getenv('GITHUB_RUN_NUMBER')}"
+
 allprojects {
     apply plugin: 'fabric-loom'
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
-    version = rootProject.mod_version
 
     repositories {
         maven {
@@ -81,6 +83,7 @@ subprojects {
     apply plugin: 'java-library'
 
     archivesBaseName = project.name
+    version = rootProject.version
 }
 
 repositories {
