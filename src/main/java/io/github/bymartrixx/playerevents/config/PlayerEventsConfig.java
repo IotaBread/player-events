@@ -136,7 +136,7 @@ public class PlayerEventsConfig {
     }
 
     public void runKillEntityActions(MinecraftServer server, ServerPlayerEntity player, Entity killedEntity) {
-        for (String action : killPlayer.actions) {
+        for (String action : killEntity.actions) {
             if (action.charAt(0) == '/') {
                 String string = Utils.replace(action, player);
                 string = Utils.replace(string, "${killedEntity}", killedEntity.getName().asString());
