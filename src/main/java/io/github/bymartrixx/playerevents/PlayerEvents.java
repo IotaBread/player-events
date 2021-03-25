@@ -65,6 +65,6 @@ public class PlayerEvents implements DedicatedServerModInitializer {
     }
 
     public static void log(Level level, String message, Object ... fields){
-        LOGGER.log(level, "["+MOD_NAME+"] " + message, fields);
+        LOGGER.log(level, "[" + MOD_NAME + "] " + message, fields);
     }
 }
