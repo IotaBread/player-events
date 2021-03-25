@@ -2,30 +2,29 @@
   "schemaVersion": 1,
   "id": "player_events",
   "version": "${version}",
+
   "name": "Player Events",
   "description": "A mod that executes and sends configurable commands and messages respectively on certain events triggered by a player.",
   "authors": [
     "ByMartrixx"
   ],
-  "contributors": [],
   "contact": {
     "sources": "https://github.com/ByMartrixx/player-events",
     "issues": "https://github.com/ByMartrixx/player-events/issues"
   },
+
   "license": "MIT",
   "icon": "assets/player_events/icon.png",
+
   "environment": "*",
   "entrypoints": {
-    "main": [],
-    "client": [],
     "server": [
       "io.github.bymartrixx.playerevents.PlayerEvents"
     ]
   },
-  "mixins": [],
+
   "depends": {
-    "fabricloader": ">=0.9.3",
-    "fabric": "*",
-    "player_events_api": "*"
+    "player_events_api": "*",
+    "fabric": "*"
   }
 }
