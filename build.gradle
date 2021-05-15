@@ -80,7 +80,6 @@ subprojects {
     apply plugin: 'maven-publish'
     apply plugin: 'java-library'
 
-    archivesBaseName = project.name
     version = rootProject.version
 }
 

@@ -1,4 +1,5 @@
-group = "${rootProject.group}.playerevents"
+group = "${rootProject.group}.player-events"
+archivesBaseName = "player-events-api"
 
 publishing {
     publications {
