@@ -117,14 +117,6 @@ publishing {
             artifact(sourcesJar) {
                 builtBy remapSourcesJar
             }
-            pom.withXml {
-                def root = asNode()
-                root.appendNode('description', 'A mod that executes and sends configurable commands and messages respectively when a player does something.')
-                root.appendNode('name', 'Player Events')
-                root.appendNode('url', 'https://github.com/ByMartrixx/player-events')
-            }
-            groupId("${project.maven_group}")
-            artifactId 'player-events'
         }
     }
 

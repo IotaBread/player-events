@@ -13,14 +13,6 @@ publishing {
             artifact(sourcesJar) {
                 builtBy remapSourcesJar
             }
-            pom.withXml {
-                def root = asNode()
-                root.appendNode('description', 'An API to run code on players dying, joining and/or leaving')
-                root.appendNode('name', 'Player Events API')
-                root.appendNode('url', 'https://github.com/ByMartrixx/player-events')
-            }
-            groupId("${project.group}")
-            artifactId 'api'
         }
     }
 }
