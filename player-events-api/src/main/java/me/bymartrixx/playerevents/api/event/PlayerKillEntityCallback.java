@@ -1,4 +1,4 @@
-package io.github.bymartrixx.playerevents.api.event;
+package me.bymartrixx.playerevents.api.event;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -6,10 +6,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 
-/**
- * @deprecated use {@link me.bymartrixx.playerevents.api.event.PlayerKillEntityCallback} instead.
- */
-@Deprecated
 public interface PlayerKillEntityCallback {
     Event<PlayerKillEntityCallback> EVENT = EventFactory.createArrayBacked(PlayerKillEntityCallback.class, (listeners) -> (player, killedEntity) -> {
         for (PlayerKillEntityCallback listener : listeners) {

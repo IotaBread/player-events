@@ -1,6 +1,6 @@
-package io.github.bymartrixx.playerevents.api.mixin;
+package me.bymartrixx.playerevents.api.mixin;
 
-import io.github.bymartrixx.playerevents.api.event.PlayerKillPlayerCallback;
+import me.bymartrixx.playerevents.api.event.PlayerKillPlayerCallback;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
@@ -17,6 +17,7 @@ public class PlayerKillPlayerMixin {
         Entity attacker = source.getAttacker();
         if (attacker instanceof PlayerEntity) {
             PlayerKillPlayerCallback.EVENT.invoker().killPlayer((ServerPlayerEntity) attacker, (ServerPlayerEntity) (Object) this);
+            io.github.bymartrixx.playerevents.api.event.PlayerKillPlayerCallback.EVENT.invoker().killPlayer((ServerPlayerEntity) attacker, (ServerPlayerEntity) (Object) this);
         }
     }
 }

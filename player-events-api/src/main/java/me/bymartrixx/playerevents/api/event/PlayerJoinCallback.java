@@ -1,4 +1,4 @@
-package io.github.bymartrixx.playerevents.api.event;
+package me.bymartrixx.playerevents.api.event;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -6,10 +6,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 
-/**
- * @deprecated use {@link me.bymartrixx.playerevents.api.event.PlayerJoinCallback} instead.
- */
-@Deprecated
 public interface PlayerJoinCallback {
     Event<PlayerJoinCallback> EVENT = EventFactory.createArrayBacked(PlayerJoinCallback.class, (listeners) -> (player, server) -> {
         for (PlayerJoinCallback listener : listeners) {

@@ -1,11 +1,13 @@
 {
   "required": true,
-  "package": "io.github.bymartrixx.playerevents.api.mixin",
+  "package": "me.bymartrixx.playerevents.api.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "PlayerDeathMixin",
     "PlayerJoinMixin",
-    "PlayerLeaveMixin"
+    "PlayerLeaveMixin",
+    "PlayerKillEntityMixin",
+    "PlayerKillPlayerMixin"
   ],
   "client": [],
   "server": [],
