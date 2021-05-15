@@ -19,11 +19,5 @@ public class PlayerJoinMixin {
         if (result == ActionResult.FAIL) {
             info.cancel();
         }
-
-        ActionResult result1 = io.github.bymartrixx.player_events.api.event.PlayerJoinCallback.EVENT.invoker().join(player, player.getServer());
-
-        if (result1 == ActionResult.FAIL) {
-            info.cancel();
-        }
     }
 }

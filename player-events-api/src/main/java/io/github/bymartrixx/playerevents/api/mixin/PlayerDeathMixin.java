@@ -18,11 +18,5 @@ public class PlayerDeathMixin {
         if (result == ActionResult.FAIL) {
             info.cancel();
         }
-
-        ActionResult result1 = io.github.bymartrixx.player_events.api.event.PlayerDeathCallback.EVENT.invoker().interact((ServerPlayerEntity) (Object) this, source);
-
-        if (result1 == ActionResult.FAIL) {
-            info.cancel();
-        }
     }
 }

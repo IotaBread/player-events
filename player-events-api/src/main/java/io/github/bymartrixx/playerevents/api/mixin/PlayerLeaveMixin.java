@@ -14,19 +14,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ServerPlayNetworkHandler.class)
 public class PlayerLeaveMixin {
     @Shadow
-    private ServerPlayerEntity player;
+    public ServerPlayerEntity player;
 
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerEntity;onDisconnect()V"), method = "onDisconnected", cancellable = true)
     private void onPlayerLeave(Text reason, CallbackInfo info) {
         ActionResult result = PlayerLeaveCallback.EVENT.invoker().leaveServer(this.player, this.player.getServer());
 
         if (result == ActionResult.FAIL) {
-            info.cancel();
-        }
-
-        ActionResult result1 = io.github.bymartrixx.player_events.api.event.PlayerLeaveCallback.EVENT.invoker().leave(this.player, this.player.getServer());
-
-        if (result1 == ActionResult.FAIL) {
             info.cancel();
         }
     }
