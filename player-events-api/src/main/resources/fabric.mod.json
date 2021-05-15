@@ -4,25 +4,23 @@
   "version": "${version}",
 
   "name": "Player Events API",
-  "description": "An API to run code on players dying, joining and/or leaving",
+  "description": "An API to run code on various player-related events",
   "authors": [
     "ByMartrixx"
   ],
   "contact": {
-    "sources": "https://github.com/ByMartrixx/join-messages/"
+    "sources": "https://github.com/ByMartrixx/player-events",
+    "issues": "https://github.com/ByMartrixx/player-events/issues"
   },
 
   "license": "MIT",
 
-  "environment": "*",
+  "environment": "server",
   "mixins": [
     "player_events_api.mixins.json"
   ],
 
   "depends": {
     "fabric": "*"
-  },
-  "custom": {
-    "modmenu:api": true
   }
 }

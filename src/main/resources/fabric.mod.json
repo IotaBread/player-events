@@ -15,7 +15,7 @@
 
   "license": "MIT",
 
-  "environment": "*",
+  "environment": "server",
   "entrypoints": {
     "server": [
       "io.github.bymartrixx.playerevents.PlayerEvents"
