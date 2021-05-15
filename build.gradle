@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '0.6-SNAPSHOT'
+    id 'fabric-loom' version '0.7-SNAPSHOT'
     id 'maven-publish'
     id 'java-library'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
@@ -21,10 +21,8 @@ allprojects {
             name 'FabricMC'
             url 'https://maven.fabricmc.net'
         }
-
-        // TODO: Remove
         maven {
-            url 'https://dl.bintray.com/bymartrixx/maven'
+            url 'https://maven.bymartrixx.me'
         }
     }
 
@@ -36,7 +34,7 @@ allprojects {
 
         modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
-        modImplementation 'io.github.bymartrixx.wdmcf:wdmcf:1.0.1'
+        modImplementation 'me.bymartrixx:wdmcf:1.0.2'
     }
 
     processResources {
