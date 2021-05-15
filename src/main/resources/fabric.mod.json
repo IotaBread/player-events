@@ -18,7 +18,7 @@
   "environment": "server",
   "entrypoints": {
     "server": [
-      "io.github.bymartrixx.playerevents.PlayerEvents"
+      "me.bymartrixx.playerevents.PlayerEvents"
     ]
   },
 

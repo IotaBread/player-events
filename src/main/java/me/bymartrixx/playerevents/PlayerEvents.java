@@ -1,11 +1,15 @@
-package io.github.bymartrixx.playerevents;
+package me.bymartrixx.playerevents;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import io.github.bymartrixx.playerevents.api.event.*;
-import io.github.bymartrixx.playerevents.command.PlayerEventsCommand;
-import io.github.bymartrixx.playerevents.config.PlayerEventsConfig;
+import me.bymartrixx.playerevents.api.event.PlayerDeathCallback;
+import me.bymartrixx.playerevents.api.event.PlayerJoinCallback;
+import me.bymartrixx.playerevents.api.event.PlayerKillEntityCallback;
+import me.bymartrixx.playerevents.api.event.PlayerKillPlayerCallback;
+import me.bymartrixx.playerevents.api.event.PlayerLeaveCallback;
+import me.bymartrixx.playerevents.command.PlayerEventsCommand;
+import me.bymartrixx.playerevents.config.PlayerEventsConfig;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.util.ActionResult;

@@ -1,8 +1,8 @@
-package io.github.bymartrixx.playerevents.config;
+package me.bymartrixx.playerevents.config;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import io.github.bymartrixx.playerevents.PlayerEvents;
-import io.github.bymartrixx.playerevents.Utils;
+import me.bymartrixx.playerevents.PlayerEvents;
+import me.bymartrixx.playerevents.Utils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
@@ -12,8 +12,12 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.function.Consumer;
 import java.util.function.Function;
 

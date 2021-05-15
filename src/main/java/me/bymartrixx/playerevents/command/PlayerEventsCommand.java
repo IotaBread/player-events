@@ -1,8 +1,8 @@
-package io.github.bymartrixx.playerevents.command;
+package me.bymartrixx.playerevents.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import io.github.bymartrixx.playerevents.PlayerEvents;
+import me.bymartrixx.playerevents.PlayerEvents;
 import net.minecraft.server.command.ServerCommandSource;
 
 import static net.minecraft.server.command.CommandManager.literal;

@@ -1,4 +1,4 @@
-package io.github.bymartrixx.playerevents;
+package me.bymartrixx.playerevents;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -11,7 +11,6 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
