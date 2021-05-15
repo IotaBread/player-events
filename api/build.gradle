@@ -20,7 +20,7 @@ publishing {
                 root.appendNode('url', 'https://github.com/ByMartrixx/player-events')
             }
             groupId("${project.group}")
-            artifactId 'player-events-api'
+            artifactId 'api'
         }
     }
 }

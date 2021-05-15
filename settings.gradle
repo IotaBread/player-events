@@ -10,4 +10,4 @@ pluginManagement {
 }
 rootProject.name = 'PlayerEvents'
 
-include 'player-events-api'
+include 'api'

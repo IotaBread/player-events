@@ -93,8 +93,8 @@ repositories {
 
 dependencies {
     // Add subprojects as dependency of root project
-    api project(':player-events-api')
-    include project(':player-events-api')
+    api project(':api')
+    include project(':api')
 
     // FabricPlaceholderApi
     modImplementation include('com.github.Patbox:FabricPlaceholderAPI:0.3.0')
@@ -152,7 +152,7 @@ curseforge {
         mainArtifact(remapJar) {
             displayName = "Player Events ${version} ${project.valid_minecraft_version}"
         }
-        addArtifact(project(':player-events-api').buildDir.absolutePath + '/libs/' + project(':player-events-api').name + "-${project.version}.jar") {
+        addArtifact(project(':api').buildDir.absolutePath + '/libs/' + project(':api').name + "-${project.version}.jar") {
             displayName = "Player Events API ${version} ${project.valid_minecraft_version}"
         }
         afterEvaluate {

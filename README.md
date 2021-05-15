@@ -77,8 +77,8 @@ This part is for mod developers that would like to use the mod api.
 ### Compiling
 
 1. Clone or download the repository
-2. On a command prompt run `gradlew build` to compile the mod. (If you only need the API files, you can run `gradlew player-events-api:build` instead)
-3. You'll find the compiled `.jar` files under `<repository>/build/libs` and `<repository>/player-events-api/build/libs`
+2. On a command prompt run `gradlew build` to compile the mod. (If you only need the API files, you can run `gradlew api:build` instead)
+3. You'll find the compiled `.jar` files under `<repository>/build/libs` and `<repository>/api/build/libs`
 
 ### API
 #### Adding the API as a dependency of your mod
