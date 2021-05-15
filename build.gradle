@@ -34,7 +34,7 @@ allprojects {
 
         modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
-        modImplementation 'me.bymartrixx:wdmcf:1.0.2'
+        testImplementation 'me.bymartrixx:wdmcf:1.0.2'
     }
 
     processResources {
