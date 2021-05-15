@@ -4,20 +4,13 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.ActionResult;
 
 public interface PlayerDeathCallback {
     Event<PlayerDeathCallback> EVENT = EventFactory.createArrayBacked(PlayerDeathCallback.class, (listeners) -> (player, source) -> {
         for (PlayerDeathCallback listener : listeners) {
-            ActionResult result = listener.kill(player, source);
-
-            if (result != ActionResult.PASS) {
-                return result;
-            }
+            listener.kill(player, source);
         }
-
-        return ActionResult.PASS;
     });
 
-    ActionResult kill(ServerPlayerEntity player, DamageSource source);
+    void kill(ServerPlayerEntity player, DamageSource source);
 }
