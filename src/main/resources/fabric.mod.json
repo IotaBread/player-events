@@ -14,7 +14,6 @@
   },
 
   "license": "MIT",
-  "icon": "assets/player_events/icon.png",
 
   "environment": "*",
   "entrypoints": {

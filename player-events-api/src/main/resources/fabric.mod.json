@@ -13,7 +13,6 @@
   },
 
   "license": "MIT",
-  "icon": "assets/player_events_api/icon.png",
 
   "environment": "*",
   "mixins": [
