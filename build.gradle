@@ -108,10 +108,7 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             // add all the jars that should be included when publishing to maven
-            artifact(jar) {
-                builtBy remapJar
-            }
-            artifact("${project.buildDir.absolutePath}/libs/${archivesBaseName}-${project.version}.jar"){
+            artifact(remapJar){
                 builtBy remapJar
             }
             artifact(sourcesJar) {
@@ -140,15 +137,17 @@ curseforge {
         addGameVersion '1.16.2'
         addGameVersion '1.16.3'
         addGameVersion '1.16.4'
+        addGameVersion '1.16.5'
         addGameVersion 'Fabric'
         mainArtifact(remapJar) {
             displayName = "Player Events ${version} ${project.valid_minecraft_version}"
         }
-        addArtifact(project(':api').buildDir.absolutePath + '/libs/' + project(':api').name + "-${project.version}.jar") {
+        addArtifact(project(':api').remapJar) {
             displayName = "Player Events API ${version} ${project.valid_minecraft_version}"
         }
         afterEvaluate {
             uploadTask.dependsOn('remapJar')
+            uploadTask.dependsOn('api:remapJar')
         }
     }
     options {
