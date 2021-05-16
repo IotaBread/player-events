@@ -45,8 +45,7 @@ public class PlayerEventsConfig {
             try (FileWriter fileWriter = new FileWriter(configFile)) {
                 fileWriter.write(jsonString);
             } catch (IOException e) {
-                System.err.println("Couldn't save Player Events config.");
-                e.printStackTrace();
+                PlayerEvents.error("Couldn't save Player Events config.", e);
             }
         }
 
@@ -66,8 +65,7 @@ public class PlayerEventsConfig {
                     }
                 }
             } catch (FileNotFoundException e) {
-                System.err.println("Couldn't load configuration for Player Events. Reverting to default.");
-                e.printStackTrace();
+                PlayerEvents.error("Couldn't load configuration for Player Events. Reverting to default.", e);
                 createConfigFile();
             }
         }

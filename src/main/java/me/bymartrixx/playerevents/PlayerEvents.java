@@ -3,6 +3,7 @@ package me.bymartrixx.playerevents;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import me.bymartrixx.playerevents.api.event.PlayerDeathCallback;
 import me.bymartrixx.playerevents.api.event.PlayerJoinCallback;
 import me.bymartrixx.playerevents.api.event.PlayerKillEntityCallback;
@@ -28,7 +29,11 @@ public class PlayerEvents implements DedicatedServerModInitializer {
 
     @Override
     public void onInitializeServer() {
-        PlayerEventsConfig.Manager.loadConfig();
+        try {
+            PlayerEventsConfig.Manager.loadConfig();
+        } catch (JsonSyntaxException e) {
+            error("Invalid JSON syntax in the config file", e);
+        }
 
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> PlayerEventsCommand.register(dispatcher));
 
@@ -51,5 +56,13 @@ public class PlayerEvents implements DedicatedServerModInitializer {
 
     public static void log(Level level, String message, Object ... fields){
         LOGGER.log(level, "[" + MOD_NAME + "] " + message, fields);
+    }
+
+    public static void error(String message) {
+        LOGGER.error("[" + MOD_NAME + "] " + message);
+    }
+
+    public static void error(String message, Throwable t) {
+        LOGGER.error("[" + MOD_NAME + "] " + message, t);
     }
 }
