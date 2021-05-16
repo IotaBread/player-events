@@ -119,7 +119,13 @@ publishing {
     // select the repositories you want to publish to
     repositories {
         // uncomment to publish to the local maven
-        // mavenLocal()
+        maven {
+            url 's3://maven.bymartrixx.me'
+            credentials(AwsCredentials) {
+                accessKey = System.env.AWS_ACCESS_KEY ?: findProperty('mavenAccessKey')
+                secretKey = System.env.AWS_SECRET_KEY ?: findProperty('mavenSecretKey')
+            }
+        }
     }
 }
 
