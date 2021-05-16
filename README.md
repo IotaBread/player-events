@@ -1,7 +1,7 @@
 # Player Events
 
-[ ![Download](https://api.bintray.com/packages/bymartrixx/maven/player_events_api/images/download.svg) ](https://github.com/ByMartrixx/join-messages/releases/tag/1.0.0)
-[ ![Build Status](https://travis-ci.com/ByMartrixx/player-events.svg?branch=master)](https://travis-ci.com/ByMartrixx/player-events)
+[ ![GitHub release](https://img.shields.io/github/v/release/ByMartrixx/player-events) ](https://github.com/ByMartrixx/player-events/releases/latest)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ByMartrixx/player-events/build)
 
 <a href='https://www.curseforge.com/minecraft/mc-mods/fabric-api'><img src='https://i.imgur.com/Ol1Tcf8.png' width="150"></a>
 
@@ -82,29 +82,28 @@ This part is for mod developers that would like to use the mod api.
 
 ### API
 #### Adding the API as a dependency of your mod
-Add the following text to your `build.gradle`:
-##### Starting from May 1st you won't be able to use the api this way
+Add the following snippet to your `build.gradle`:
 ```groovy
 repositories {
     maven {
-        url 'https://dl.bintray.com/bymartrixx/maven'    
+        url 'https://maven.bymartrixx.me'    
     }
 }
 
 dependencies {
     // Using the version from the gradle.properties
-    modImplementation "io.github.bymartrixx.playerevents:player-events-api:${project.player_events_api_version}"
+    modImplementation "me.bymartrixx.player-events:api:${project.player_events_api_version}"
 
     // Directly setting the version
-    modImplementation "io.github.bymartrixx.playerevents:player-events-api:2.0.0"
+    modImplementation "me.bymartrixx.player-events:api:2.0.0"
 }
 ```
-Add this to your `gradle.properties` (Only if you aren't directly setting the version to the build.gradle file):
+Add this snippet to your `gradle.properties` if you aren't directly setting the version to the build.gradle file:
 ```properties
 player_events_api_version = 2.0.0
 ```
 
-Also, add this to your `fabric.mod.json`:
+Also, add this snippet to your `fabric.mod.json` if you want your mod to depend on the api:
 ```json
 {
   "depends": {
@@ -114,26 +113,28 @@ Also, add this to your `fabric.mod.json`:
 ```
 
 #### Events
-* `death` - `io.github.bymartrixx.playerevents.api.event.PlayerDeathCallback.EVENT`
-* `join` - `io.github.bymartrixx.playerevents.api.event.PlayerJoinCallback.EVENT`
-* `kill_entity` - `io.github.bymartrixx.playerevents.api.event.PlayerKillEntityCallback.EVENT`
-* `kill_player` - `io.github.bymartrixx.playerevents.api.event.PlayerKillPlayerCallback.EVENT`
-* `leave` - `io.github.bymartrixx.playerevents.api.event.PlayerLeaveCallback.EVENT`
+* `death` - `me.bymartrixx.playerevents.api.event.PlayerDeathCallback.EVENT`
+* `join` - `me.bymartrixx.playerevents.api.event.PlayerJoinCallback.EVENT`
+* `kill_entity` - `me.bymartrixx.playerevents.api.event.PlayerKillEntityCallback.EVENT`
+* `kill_player` - `me.bymartrixx.playerevents.api.event.PlayerKillPlayerCallback.EVENT`
+* `leave` - `me.bymartrixx.playerevents.api.event.PlayerLeaveCallback.EVENT`
 
-**Note: The package `io.github.bymartrixx.player_events.api` has been moved to `io.github.bymartrixx.playerevents.api`. 1.0.0 classes still work but are now deprecated and will likely be removed in a next release. Please update your classes ASAP**
+#### Note
+The package `io.github.bymartrixx.playerevents.api` has been moved to `me.bymartrixx.playerevents.api`,
+and the package `io.github.bymartrixx.player_events.api` has been removed. Classes under the package
+`io.github.bymartrixx.playerevents.api` have been deprecated and will be removed in a next release.
 
 #### Using the events
+Example snippet
 ```java
 public class FooMod implements DedicatedServerModInitializer {
     public void onInitializeServer() {
         PlayerDeathCallback.EVENT.register((player, source) -> {
             // Do something
-            return ActionResult.PASS;
         });
 
         PlayerKillEntityCallback.EVENT.register((player, killedEntity) -> {
             // Do something
-            return ActionResult.PASS;
         });
     }
 }
