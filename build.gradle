@@ -21,9 +21,6 @@ allprojects {
             name 'FabricMC'
             url 'https://maven.fabricmc.net'
         }
-        maven {
-            url 'https://maven.bymartrixx.me'
-        }
     }
 
     dependencies {
@@ -33,8 +30,6 @@ allprojects {
         modImplementation "net.fabricmc:fabric-loader:${rootProject.loader_version}"
 
         modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-
-        testImplementation 'me.bymartrixx:wdmcf:1.0.2'
     }
 
     processResources {
@@ -88,6 +83,9 @@ repositories {
         name 'JitPack'
         url 'https://jitpack.io'
     }
+    maven {
+        url 'https://maven.bymartrixx.me'
+    }
 }
 
 dependencies {
@@ -97,6 +95,8 @@ dependencies {
 
     // FabricPlaceholderApi
     modImplementation include('com.github.Patbox:FabricPlaceholderAPI:0.3.0')
+
+    testImplementation 'me.bymartrixx:wdmcf:1.0.2'
 }
 
 subprojects.each {
