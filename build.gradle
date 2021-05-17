@@ -169,10 +169,10 @@ curseforge {
         addGameVersion '1.16.5'
         addGameVersion 'Fabric'
         mainArtifact(remapJar) {
-            displayName = "Player Events ${version} ${project.valid_minecraft_version}"
+            displayName = "Player Events ${version}"
         }
         addArtifact(project(':api').remapJar) {
-            displayName = "Player Events API ${version} ${project.valid_minecraft_version}"
+            displayName = "Player Events API ${version}"
         }
         afterEvaluate {
             uploadTask.dependsOn('remapJar')
