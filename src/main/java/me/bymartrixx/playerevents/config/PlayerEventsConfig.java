@@ -1,6 +1,8 @@
 package me.bymartrixx.playerevents.config;
 
 import com.google.common.collect.Maps;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import eu.pb4.placeholders.PlaceholderAPI;
 import me.bymartrixx.playerevents.PlayerEvents;
 import me.bymartrixx.playerevents.Utils;
 import net.fabricmc.loader.api.FabricLoader;
@@ -120,9 +122,11 @@ public class PlayerEventsConfig {
 
         if (action.startsWith("/")) {
             String command = Utils.replacePlaceholders(action, strPlaceholders);
+            command = PlaceholderAPI.parseString(PlaceholderAPI.parseString(command, player), server);
             server.getCommandManager().execute(server.getCommandSource(), command);
         } else {
             Text message = Utils.replaceTextPlaceholders(action, textPlaceholders);
+            message = PlaceholderAPI.parseText(PlaceholderAPI.parseText(message, player), server);
             Utils.message(player, message, broadcast);
         }
     }
@@ -146,9 +150,21 @@ public class PlayerEventsConfig {
 
         if (action.startsWith("/")) {
             String command = Utils.replacePlaceholders(action, strPlaceholders);
+            command = PlaceholderAPI.parseString(command, source.getMinecraftServer());
+            try {
+                command = PlaceholderAPI.parseString(command, source.getPlayer());
+            } catch (CommandSyntaxException ignored) {
+                // Ignore
+            }
             source.sendFeedback(new LiteralText(command), false);
         } else {
             Text message = Utils.replaceTextPlaceholders(action, textPlaceholders);
+            message = PlaceholderAPI.parseText(message, source.getMinecraftServer());
+            try {
+                message = PlaceholderAPI.parseText(message, source.getPlayer());
+            } catch (CommandSyntaxException ignored) {
+                // Ignore
+            }
             source.sendFeedback(message, false);
         }
     }
