@@ -1,6 +1,6 @@
 package me.bymartrixx.playerevents.config;
 
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.google.common.collect.Maps;
 import me.bymartrixx.playerevents.PlayerEvents;
 import me.bymartrixx.playerevents.Utils;
 import net.fabricmc.loader.api.FabricLoader;
@@ -9,7 +9,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import java.io.BufferedReader;
@@ -18,8 +17,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.Map;
 
 public class PlayerEventsConfig {
     public static class Manager {
@@ -85,50 +83,74 @@ public class PlayerEventsConfig {
         this.leave = new Actions();
     }
 
-    private static void executeAction(String action, Consumer<String> command, Consumer<String> message) {
-        String action1 = action.trim();
-        if (action1.startsWith("/")) {
-            command.accept(action1);
-        } else {
-            message.accept(action1);
+    private static void doSimpleAction(Actions actions, ServerPlayerEntity player) {
+        Map<String, String> stringPlaceholders = Maps.newHashMap();
+        Utils.addEntityPlaceholders(stringPlaceholders, player, "player");
+        Map<String, Text> textPlaceholders = Maps.newHashMap();
+        Utils.addEntityTextPlaceholders(textPlaceholders, player, "player");
+        for (String action : actions.actions) {
+            doAction(action, player, stringPlaceholders, textPlaceholders, actions.broadcastToEveryone);
         }
     }
 
-    private static void executeBasicAction(String action, MinecraftServer server, ServerPlayerEntity player, boolean sendToEveryone) {
-        executeAction(action,
-                action1 -> server.getCommandManager().execute(server.getCommandSource(), Utils.replacePlaceholderString(action1, player)),
-                action1 -> Utils.sendMessage(server, player, Utils.replacePlaceholderText(action1, player), sendToEveryone));
-    }
-
-    private static void executeBasicAction(String action, MinecraftServer server, ServerPlayerEntity player) {
-        executeBasicAction(action, server, player, true);
-    }
-
-    private static Text testAction(String action, Function<String, Text> command, Function<String, Text> message) {
-        String action1 = action.trim();
-        if (action1.startsWith("/")) {
-            return command.apply(action1);
-        } else {
-            return message.apply(action1);
+    private static void doSimpleAction(Actions actions, ServerPlayerEntity player,
+                                       MinecraftServer server) {
+        Map<String, String> stringPlaceholders = Maps.newHashMap();
+        Utils.addEntityPlaceholders(stringPlaceholders, player, "player");
+        Map<String, Text> textPlaceholders = Maps.newHashMap();
+        Utils.addEntityTextPlaceholders(textPlaceholders, player, "player");
+        for (String action : actions.actions) {
+            doAction(action, player, server, stringPlaceholders, textPlaceholders, actions.broadcastToEveryone);
         }
     }
 
-    private static Text testBasicAction(String action, ServerCommandSource source) {
-        return testAction(action, action1 -> {
-            try {
-                ServerPlayerEntity player = source.getPlayer();
-                return new LiteralText(Utils.replacePlaceholderString(action1, player));
-            } catch (CommandSyntaxException e) {
-                return new LiteralText(Utils.replacePlaceholderString(action1, "${player}", source.getName()));
-            }
-        }, action1 -> {
-            try {
-                ServerPlayerEntity player = source.getPlayer();
-                return Utils.replacePlaceholderText(action1, player);
-            } catch (CommandSyntaxException e) {
-                return Utils.replacePlaceholderText(action, "${player}", source.getDisplayName());
-            }
-        });
+    private static void doAction(String action, ServerPlayerEntity player,
+                                 Map<String, String> strPlaceholders, Map<String, Text> textPlaceholders, boolean broadcast) {
+        MinecraftServer server = player.getServer();
+        if (server == null) {
+            return; // Shouldn't happen
+        }
+
+        doAction(action, player, server, strPlaceholders, textPlaceholders, broadcast);
+    }
+
+    private static void doAction(String action, ServerPlayerEntity player, MinecraftServer server,
+                                 Map<String, String> strPlaceholders, Map<String, Text> textPlaceholders, boolean broadcast) {
+        action = action.trim();
+
+        if (action.startsWith("/")) {
+            String command = Utils.replacePlaceholders(action, strPlaceholders);
+            server.getCommandManager().execute(server.getCommandSource(), command);
+        } else {
+            Text message = Utils.replaceTextPlaceholders(action, textPlaceholders);
+            Utils.message(player, message, broadcast);
+        }
+    }
+
+    public static void testSimpleAction(Actions actions, ServerCommandSource source, String title) {
+        String message = String.format(title, actions.broadcastToEveryone ? "Send to everyone" : "Send only to the player");
+        source.sendFeedback(new LiteralText("" + Formatting.GRAY + Formatting.ITALIC + message), false);
+
+        Map<String, String> stringPlaceholders = Maps.newHashMap();
+        Utils.addCommandSourcePlaceholders(stringPlaceholders, source, "player");
+        Map<String, Text> textPlaceholders = Maps.newHashMap();
+        Utils.addCommandSourceTextPlaceholders(textPlaceholders, source, "player");
+        for (String action : actions.actions) {
+            testAction(action, source, stringPlaceholders, textPlaceholders);
+        }
+    }
+
+    public static void testAction(String action, ServerCommandSource source,
+                                  Map<String, String> strPlaceholders, Map<String, Text> textPlaceholders) {
+        action = action.trim();
+
+        if (action.startsWith("/")) {
+            String command = Utils.replacePlaceholders(action, strPlaceholders);
+            source.sendFeedback(new LiteralText(command), false);
+        } else {
+            Text message = Utils.replaceTextPlaceholders(action, textPlaceholders);
+            source.sendFeedback(message, false);
+        }
     }
 
     public String[] getDeathActions() {
@@ -151,137 +173,93 @@ public class PlayerEventsConfig {
         return this.leave.actions;
     }
 
-    public void runDeathActions(ServerPlayerEntity player) {
-        // TODO: add ${source}?
-        for (String action : this.death.actions) {
-            MinecraftServer server = player.getServer();
-            if (server == null) {
-                return;
-            }
-
-            executeBasicAction(action, server, player, this.death.broadcastToEveryone);
-        }
+    public void doDeathActions(ServerPlayerEntity player) {
+        doSimpleAction(this.death, player);
     }
 
-    public void runJoinActions(MinecraftServer server, ServerPlayerEntity player) {
-        for (String action : this.join.actions) {
-            executeBasicAction(action, server, player, this.join.broadcastToEveryone);
-        }
+    public void doJoinActions(ServerPlayerEntity player, MinecraftServer server) {
+        doSimpleAction(this.join, player, server);
     }
 
-    public void runLeaveActions(MinecraftServer server, ServerPlayerEntity player) {
-        for (String action : this.leave.actions) {
-            executeBasicAction(action, server, player);
-        }
+    public void doLeaveActions(ServerPlayerEntity player, MinecraftServer server) {
+        doSimpleAction(this.leave, player, server);
     }
 
-    public void runKillEntityActions(MinecraftServer server, ServerPlayerEntity player, Entity killedEntity) {
+    public void doKillEntityActions(ServerPlayerEntity player, Entity killedEntity) {
+        Map<String, String> strPlaceholders = Maps.newHashMap();
+        Utils.addEntityPlaceholders(strPlaceholders, player, "player");
+        Utils.addEntityPlaceholders(strPlaceholders, killedEntity, "killedEntity");
+        Map<String, Text> textPlaceholders = Maps.newHashMap();
+        Utils.addEntityTextPlaceholders(textPlaceholders, player, "player");
+        Utils.addEntityTextPlaceholders(textPlaceholders, killedEntity, "killedEntity");
+
         for (String action : this.killEntity.actions) {
-            executeAction(action, action1 -> {
-                String command = Utils.replacePlaceholderString(action1, player);
-                command = Utils.replacePlaceholderString(command, "${killedEntity}", killedEntity.getName().asString());
-                server.getCommandManager().execute(server.getCommandSource(), command);
-            }, action1 -> {
-                MutableText text = Utils.replacePlaceholderText(action1, new String[]{"${player}", "${killedEntity}"}, new Text[]{player.getDisplayName(), killedEntity.getDisplayName()});
-                Utils.sendMessage(server, player, text, this.killEntity.broadcastToEveryone);
-            });
+            doAction(action, player, strPlaceholders, textPlaceholders, this.killEntity.broadcastToEveryone);
         }
     }
 
-    public void runKillPlayerActions(MinecraftServer server, ServerPlayerEntity player, ServerPlayerEntity killedPlayer) {
+    public void doKillPlayerActions(ServerPlayerEntity player, ServerPlayerEntity killedPlayer) {
+        Map<String, String> strPlaceholders = Maps.newHashMap();
+        Utils.addEntityPlaceholders(strPlaceholders, player, "player");
+        Utils.addEntityPlaceholders(strPlaceholders, killedPlayer, "killedPlayer");
+        Map<String, Text> textPlaceholders = Maps.newHashMap();
+        Utils.addEntityTextPlaceholders(textPlaceholders, player, "player");
+        Utils.addEntityTextPlaceholders(textPlaceholders, killedPlayer, "killedPlayer");
+
         for (String action : this.killPlayer.actions) {
-            executeAction(action, action1 -> {
-                String command = Utils.replacePlaceholderString(action1, player);
-                command = Utils.replacePlaceholderString(command, "${killedPlayer}", killedPlayer.getName().asString());
-                server.getCommandManager().execute(server.getCommandSource(), command);
-            }, action1 -> {
-                MutableText text = Utils.replacePlaceholderText(action1, new String[]{"${player}", "${killedPlayer}"}, new Text[]{player.getDisplayName(), killedPlayer.getDisplayName()});
-                Utils.sendMessage(server, player, text, this.killPlayer.broadcastToEveryone);
-            });
+            doAction(action, player, strPlaceholders, textPlaceholders, this.killPlayer.broadcastToEveryone);
         }
     }
 
     public void testDeathActions(ServerCommandSource source) {
-        String message = "Death actions (" + (this.death.broadcastToEveryone ? "Send to everyone" : "Send only to the player") + "):";
-        source.sendFeedback(new LiteralText(message).formatted(Formatting.GRAY, Formatting.ITALIC), false);
-
-        for (String action : this.death.actions) {
-            Utils.sendMessage(source, testBasicAction(action, source));
-        }
+        testSimpleAction(this.death, source, "Death actions (%s):");
     }
 
     public void testJoinActions(ServerCommandSource source) {
-        String message = "Join actions (" + (this.join.broadcastToEveryone ? "Send to everyone" : "Send only to the player") + "):";
-        source.sendFeedback(new LiteralText(message).formatted(Formatting.GRAY, Formatting.ITALIC), false);
+        testSimpleAction(this.join, source, "Join actions (%s):");
+    }
 
-        for (String action : this.join.actions) {
-            Utils.sendMessage(source, testBasicAction(action, source));
-        }
+    public void testLeaveActions(ServerCommandSource source) {
+        testSimpleAction(this.leave, source, "Leave actions:");
     }
 
     public void testKillEntityActions(ServerCommandSource source) {
-        String message = "Kill entity actions (" + (killEntity.broadcastToEveryone ? "Send to everyone" : "Send only to the player") + "):";
-        source.sendFeedback(new LiteralText(message).formatted(Formatting.GRAY, Formatting.ITALIC), false);
+        String message = String.format("Kill entity actions (%s):", this.killEntity.broadcastToEveryone ? "Send to everyone" : "Send only to the player");
+        source.sendFeedback(new LiteralText("" + Formatting.GRAY + Formatting.ITALIC + message), false);
+
+        Map<String, String> stringPlaceholders = Maps.newHashMap();
+        Utils.addCommandSourcePlaceholders(stringPlaceholders, source, "player");
+        stringPlaceholders.put("killedEntity", "dummyEntity");
+        stringPlaceholders.put("killedEntity.display", "Dummy entity");
+        stringPlaceholders.put("killedEntity.entityName", "Dummy");
+        stringPlaceholders.put("killedEntity.x", "0.0");
+        stringPlaceholders.put("killedEntity.y", "0.0");
+        stringPlaceholders.put("killedEntity.z", "0.0");
+
+        Map<String, Text> textPlaceholders = Maps.newHashMap();
+        Utils.addCommandSourceTextPlaceholders(textPlaceholders, source, "player");
+        textPlaceholders.put("killedEntity", new LiteralText("dummyEntity"));
+        textPlaceholders.put("killedEntity.display", new LiteralText("Dummy entity"));
+        textPlaceholders.put("killedEntity.entityName", new LiteralText("Dummy"));
+        textPlaceholders.put("killedEntity.x", new LiteralText("0.0"));
+        textPlaceholders.put("killedEntity.y", new LiteralText("0.0"));
+        textPlaceholders.put("killedEntity.z", new LiteralText("0.0"));
 
         for (String action : this.killEntity.actions) {
-            Utils.sendMessage(source, testAction(action, action1 -> {
-                String command;
-                try {
-                    ServerPlayerEntity player = source.getPlayer();
-                    command = Utils.replacePlaceholderString(action1, player);
-                } catch (CommandSyntaxException e) {
-                    command = Utils.replacePlaceholderString(action1, "${player}", source.getName());
-                }
-
-                command = Utils.replacePlaceholderString(command, "${killedEntity}", "dummyEntity");
-
-                return new LiteralText(command);
-            }, action1 -> {
-                try {
-                    ServerPlayerEntity player = source.getPlayer();
-                    return Utils.replacePlaceholderText(action1, new String[]{"${player}", "${killedEntity}"}, new Text[]{player.getDisplayName(), new LiteralText("dummyEntity")});
-                } catch (CommandSyntaxException e) {
-                    return Utils.replacePlaceholderText(action1, new String[]{"${player}", "${killedEntity}"}, new Text[]{source.getDisplayName(), new LiteralText("dummyEntity")});
-                }
-            }));
+            testAction(action, source, stringPlaceholders, textPlaceholders);
         }
     }
 
     public void testKillPlayerActions(ServerCommandSource source) {
-        String message = "Kill player actions (" + (killPlayer.broadcastToEveryone ? "Send to everyone" : "Send only to the player") + "):";
-        source.sendFeedback(new LiteralText(message).formatted(Formatting.GRAY, Formatting.ITALIC), false);
+        String message = String.format("Kill player actions (%s):", this.killPlayer.broadcastToEveryone ? "Send to everyone" : "Send only to the player");
+        source.sendFeedback(new LiteralText("" + Formatting.GRAY + Formatting.ITALIC + message), false);
 
-        for (String action : this.killPlayer.actions) {
-            Utils.sendMessage(source, testAction(action, action1 -> {
-                String command;
-                try {
-                    ServerPlayerEntity player = source.getPlayer();
-                    command = Utils.replacePlaceholderString(action1, player);
-                    command = Utils.replacePlaceholderString(command, "${killedPlayer}", player.getName().asString());
-                } catch (CommandSyntaxException e) {
-                    command = Utils.replacePlaceholderString(action1, "${player}", source.getName());
-                    command = Utils.replacePlaceholderString(command, "${killedPlayer}", source.getName());
-                }
-
-                return new LiteralText(command);
-            }, action1 -> {
-                try {
-                    ServerPlayerEntity player = source.getPlayer();
-                    return Utils.replacePlaceholderText(action, new String[]{"${player}", "${killedPlayer}"}, new Text[]{player.getDisplayName(), player.getDisplayName()});
-                } catch (CommandSyntaxException e) {
-                    return Utils.replacePlaceholderText(action, new String[]{"${player}", "${killedPlayer}"}, new Text[]{source.getDisplayName(), source.getDisplayName()});
-                }
-            }));
-        }
-    }
-
-    public void testLeaveActions(ServerCommandSource source) {
-        String message = "Leave actions:";
-        source.sendFeedback(new LiteralText(message).formatted(Formatting.GRAY, Formatting.ITALIC), false);
-
-        for (String action : this.leave.actions) {
-            Utils.sendMessage(source, testBasicAction(action, source));
-        }
+        Map<String, String> stringPlaceholders = Maps.newHashMap();
+        Utils.addCommandSourcePlaceholders(stringPlaceholders, source, "player");
+        Utils.addCommandSourcePlaceholders(stringPlaceholders, source, "killedPlayer");
+        Map<String, Text> textPlaceholders = Maps.newHashMap();
+        Utils.addCommandSourceTextPlaceholders(textPlaceholders, source, "player");
+        Utils.addCommandSourceTextPlaceholders(textPlaceholders, source, "killedPlayer");
     }
 
     public void testEveryActionGroup(ServerCommandSource source) {
