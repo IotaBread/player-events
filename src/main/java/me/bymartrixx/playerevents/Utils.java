@@ -25,7 +25,7 @@ public class Utils {
         } else {
             placeholders.put(baseKey, source.getName());
             placeholders.put(baseKey + ".display", source.getDisplayName().asString());
-            placeholders.put(baseKey + ".entityName", "none");
+            placeholders.put(baseKey + ".uuid", "none");
             Vec3d pos = source.getPosition();
             placeholders.put(baseKey + ".x", String.format("%.1f", pos.x));
             placeholders.put(baseKey + ".y", String.format("%.1f", pos.y));
@@ -36,7 +36,7 @@ public class Utils {
     public static void addEntityPlaceholders(Map<String, String> placeholders, Entity entity, String baseKey) {
         placeholders.put(baseKey, entity.getName().asString());
         placeholders.put(baseKey + ".display", entity.getDisplayName().asString());
-        placeholders.put(baseKey + ".entityName", entity.getEntityName());
+        placeholders.put(baseKey + ".uuid", entity.getEntityName());
         placeholders.put(baseKey + ".x", String.format("%.1f", entity.getX()));
         placeholders.put(baseKey + ".y", String.format("%.1f", entity.getY()));
         placeholders.put(baseKey + ".z", String.format("%.1f", entity.getZ()));
@@ -61,7 +61,7 @@ public class Utils {
     public static void addEntityTextPlaceholders(Map<String, Text> placeholders, Entity entity, String baseKey) {
         placeholders.put(baseKey, entity.getName());
         placeholders.put(baseKey + ".display", entity.getDisplayName());
-        placeholders.put(baseKey + ".entityName", new LiteralText(entity.getEntityName()));
+        placeholders.put(baseKey + ".uuid", new LiteralText(entity.getEntityName()));
         placeholders.put(baseKey + ".x", new LiteralText(String.format("%.1f", entity.getX())));
         placeholders.put(baseKey + ".y", new LiteralText(String.format("%.1f", entity.getY())));
         placeholders.put(baseKey + ".z", new LiteralText(String.format("%.1f", entity.getZ())));
@@ -74,7 +74,7 @@ public class Utils {
         } else {
             placeholders.put(baseKey, new LiteralText(source.getName()));
             placeholders.put(baseKey + ".display", source.getDisplayName());
-            placeholders.put(baseKey + ".entityName", new LiteralText("none"));
+            placeholders.put(baseKey + ".uuid", new LiteralText("none"));
             Vec3d pos = source.getPosition();
             placeholders.put(baseKey + ".x", new LiteralText(String.format("%.1f", pos.x)));
             placeholders.put(baseKey + ".y", new LiteralText(String.format("%.1f", pos.y)));
