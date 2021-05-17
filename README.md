@@ -7,7 +7,8 @@
 
 **Note: this mod is server side only and won't work on clients**
 
-A Fabric mod that executes and sends configurable commands and messages respectively on certain events triggered by a player, such as Dying, Joining a server, Killing another player, etc.
+A Fabric mod that executes and sends configurable commands and messages respectively on certain
+events triggered by a player, such as Dying, Joining a server, Killing another player, etc.
 
 The config file is located in the config directory (`config/player_events.json`) and looks like this:
 
@@ -49,16 +50,29 @@ The config file is located in the config directory (`config/player_events.json`)
 }
 ```
 
-On the JSON file you can declare, under the `actions` array on each `<event>` object, what is going to be sent and/or executed on that event. You can also set these messages to be sent only to the player by setting `broadcast_to_everyone` to `false`, but this won't work with events like `leave` (because the player isn't in the server anymore).
+On the JSON file you can declare, under the `actions` array on each `<event>` object, what is going
+to be sent and/or executed on that event. You can also set these messages to be sent only to the
+player by setting `broadcast_to_everyone` to `false`, but this won't work with events like `leave`
+(because the player isn't in the server anymore).
 
-Every event has a `${player}` token, and each instance of this token will be replaced with the player that triggers the event. Other events have extra tokens that work the same way.
-As of 2.0.0, commands remain unsupported for these tokens and only `${player}` works correctly. This functionality will be added on a future release.
+Every event has a `${player}` token, and each instance of this token will be replaced with the player
+that triggers the event. Other events have extra tokens that work the same way.
+Most (if not all) tokens have properties that can be accessed with something like `${player.name}`.
+Here is a list of all the properties:
+- `display`
+  Entity's display name, the one you see in the player list/chat. Example: "[Team blue] Tom421"
+- `uuid`
+  Entity's UUID
+- `x` `y` `z`
+  Entity coordinates
+- More coming soon™
 
 **Supports [color codes](https://minecraft.gamepedia.com/Formatting_codes#Color_codes) too!**
 
 Use `/pe reload` or `/player_events reload` to reload the mod config.
 
-You can use `/pe test <event>` or `/player_events test <event>` to test the actions on a specific event, or use `/pe test *` to test every event.
+You can use `/pe test <event>` or `/player_events test <event>` to test the actions on a specific
+event, or use `/pe test *` to test every event.
 
 ### 2.0.0 supported events
 * `death` - Executed when a player dies.
@@ -77,8 +91,9 @@ This part is for mod developers that would like to use the mod api.
 ### Compiling
 
 1. Clone or download the repository
-2. On a command prompt run `gradlew build` to compile the mod. (If you only need the API files, you can run `gradlew api:build` instead)
-3. You'll find the compiled `.jar` files under `<repository>/build/libs` and `<repository>/api/build/libs`
+2. On a command prompt run `gradlew build` to compile the mod. (If you only need the API files,
+   you can run `gradlew api:build` instead) . You'll find the compiled `.jar` files under
+   `<repository>/build/libs` and `<repository>/api/build/libs`
 
 ### API
 #### Adding the API as a dependency of your mod
