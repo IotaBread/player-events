@@ -96,19 +96,18 @@ repositories {
     }
 }
 
+// Ugly, but works
+rootProject.processResources.dependsOn(project(':api').processResources)
+
 dependencies {
     // Add subprojects as dependency of root project
-    api project(':api')
+    implementation project(':api')
     include project(':api')
 
     // FabricPlaceholderApi
     modImplementation include('com.github.Patbox:FabricPlaceholderAPI:0.3.0')
 
     testImplementation 'me.bymartrixx:wdmcf:1.0.2'
-}
-
-subprojects.each {
-    rootProject.remapJar.dependsOn(it.remapJar)
 }
 
 publishing {
