@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import me.bymartrixx.playerevents.api.event.PlayerDeathCallback;
+import me.bymartrixx.playerevents.api.event.PlayerFirstJoinCallback;
 import me.bymartrixx.playerevents.api.event.PlayerJoinCallback;
 import me.bymartrixx.playerevents.api.event.PlayerKillEntityCallback;
 import me.bymartrixx.playerevents.api.event.PlayerKillPlayerCallback;
@@ -18,7 +19,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class PlayerEvents implements DedicatedServerModInitializer {
-
     public static final Logger LOGGER = LogManager.getLogger();
     public static final Gson GSON = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).setPrettyPrinting().create();
 
@@ -38,6 +38,8 @@ public class PlayerEvents implements DedicatedServerModInitializer {
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> PlayerEventsCommand.register(dispatcher));
 
         PlayerDeathCallback.EVENT.register((player, source) -> CONFIG.doDeathActions(player));
+
+        PlayerFirstJoinCallback.EVENT.register(CONFIG::doFirstJoinActions);
 
         PlayerJoinCallback.EVENT.register(CONFIG::doJoinActions);
 

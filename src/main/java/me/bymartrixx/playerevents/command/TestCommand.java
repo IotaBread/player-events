@@ -45,6 +45,13 @@ public class TestCommand {
                 })
                 .build();
 
+        LiteralCommandNode<ServerCommandSource> firstJoinNode = literal("first_join")
+                .executes(context -> {
+                    PlayerEvents.CONFIG.testFirstJoinActions(context.getSource());
+                    return 1;
+                })
+                .build();
+
         LiteralCommandNode<ServerCommandSource> everyNode = literal("*")
                 .executes(context -> {
                     PlayerEvents.CONFIG.testEveryActionGroup(context.getSource());
@@ -57,6 +64,7 @@ public class TestCommand {
         testNode.addChild(deathNode);
         testNode.addChild(killPlayerNode);
         testNode.addChild(killEntityNode);
+        testNode.addChild(firstJoinNode);
         testNode.addChild(everyNode);
 
         return testNode;

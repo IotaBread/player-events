@@ -72,6 +72,7 @@ public class PlayerEventsConfig {
     }
 
     private final Actions death;
+    private final Actions firstJoin;
     private final Actions join;
     private final Actions killEntity;
     private final Actions killPlayer;
@@ -79,6 +80,7 @@ public class PlayerEventsConfig {
 
     public PlayerEventsConfig() {
         this.death = new Actions();
+        this.firstJoin = new Actions();
         this.join = new Actions();
         this.killPlayer = new Actions();
         this.killEntity = new Actions();
@@ -173,6 +175,10 @@ public class PlayerEventsConfig {
         return this.death.actions;
     }
 
+    public String[] getFirstJoinActions() {
+        return this.firstJoin.actions;
+    }
+
     public String[] getJoinActions() {
         return this.join.actions;
     }
@@ -191,6 +197,10 @@ public class PlayerEventsConfig {
 
     public void doDeathActions(ServerPlayerEntity player) {
         doSimpleAction(this.death, player);
+    }
+
+    public void doFirstJoinActions(ServerPlayerEntity player, MinecraftServer server) {
+        doSimpleAction(this.firstJoin, player, server);
     }
 
     public void doJoinActions(ServerPlayerEntity player, MinecraftServer server) {
@@ -229,6 +239,10 @@ public class PlayerEventsConfig {
 
     public void testDeathActions(ServerCommandSource source) {
         testSimpleAction(this.death, source, "Death actions (%s):");
+    }
+
+    public void testFirstJoinActions(ServerCommandSource source) {
+        testSimpleAction(this.firstJoin, source, "First time join actions (%s):");
     }
 
     public void testJoinActions(ServerCommandSource source) {
@@ -280,6 +294,7 @@ public class PlayerEventsConfig {
 
     public void testEveryActionGroup(ServerCommandSource source) {
         this.testDeathActions(source);
+        this.testFirstJoinActions(source);
         this.testJoinActions(source);
         this.testKillEntityActions(source);
         this.testKillPlayerActions(source);
