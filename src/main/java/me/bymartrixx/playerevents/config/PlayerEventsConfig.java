@@ -156,7 +156,7 @@ public class PlayerEventsConfig {
             } catch (CommandSyntaxException ignored) {
                 // Ignore
             }
-            source.sendFeedback(new LiteralText(command), false);
+            source.sendFeedback(new LiteralText("[COMMAND] " + command), false);
         } else {
             Text message = Utils.replaceTextPlaceholders(action, textPlaceholders);
             message = PlaceholderAPI.parseText(message, source.getMinecraftServer());
