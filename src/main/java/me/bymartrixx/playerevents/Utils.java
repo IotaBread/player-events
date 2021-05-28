@@ -27,9 +27,9 @@ public class Utils {
             placeholders.put(baseKey + ".display", source.getDisplayName().asString());
             placeholders.put(baseKey + ".uuid", "none");
             Vec3d pos = source.getPosition();
-            placeholders.put(baseKey + ".x", String.format("%.1f", pos.x));
-            placeholders.put(baseKey + ".y", String.format("%.1f", pos.y));
-            placeholders.put(baseKey + ".z", String.format("%.1f", pos.z));
+            placeholders.put(baseKey + ".x", doubleToStr(pos.x));
+            placeholders.put(baseKey + ".y", doubleToStr(pos.y));
+            placeholders.put(baseKey + ".z", doubleToStr(pos.z));
         }
     }
 
@@ -37,9 +37,9 @@ public class Utils {
         placeholders.put(baseKey, entity.getName().asString());
         placeholders.put(baseKey + ".display", entity.getDisplayName().asString());
         placeholders.put(baseKey + ".uuid", entity.getEntityName());
-        placeholders.put(baseKey + ".x", String.format("%.1f", entity.getX()));
-        placeholders.put(baseKey + ".y", String.format("%.1f", entity.getY()));
-        placeholders.put(baseKey + ".z", String.format("%.1f", entity.getZ()));
+        placeholders.put(baseKey + ".x", doubleToStr(entity.getX()));
+        placeholders.put(baseKey + ".y", doubleToStr(entity.getY()));
+        placeholders.put(baseKey + ".z", doubleToStr(entity.getZ()));
     }
 
     public static String replacePlaceholders(String format, Map<String, String> placeholders) {
@@ -62,9 +62,9 @@ public class Utils {
         placeholders.put(baseKey, entity.getName());
         placeholders.put(baseKey + ".display", entity.getDisplayName());
         placeholders.put(baseKey + ".uuid", new LiteralText(entity.getEntityName()));
-        placeholders.put(baseKey + ".x", new LiteralText(String.format("%.1f", entity.getX())));
-        placeholders.put(baseKey + ".y", new LiteralText(String.format("%.1f", entity.getY())));
-        placeholders.put(baseKey + ".z", new LiteralText(String.format("%.1f", entity.getZ())));
+        placeholders.put(baseKey + ".x", new LiteralText(doubleToStr(entity.getX())));
+        placeholders.put(baseKey + ".y", new LiteralText(doubleToStr(entity.getY())));
+        placeholders.put(baseKey + ".z", new LiteralText(doubleToStr(entity.getZ())));
     }
 
     public static void addCommandSourceTextPlaceholders(Map<String, Text> placeholders, ServerCommandSource source, String baseKey) {
@@ -76,9 +76,9 @@ public class Utils {
             placeholders.put(baseKey + ".display", source.getDisplayName());
             placeholders.put(baseKey + ".uuid", new LiteralText("none"));
             Vec3d pos = source.getPosition();
-            placeholders.put(baseKey + ".x", new LiteralText(String.format("%.1f", pos.x)));
-            placeholders.put(baseKey + ".y", new LiteralText(String.format("%.1f", pos.y)));
-            placeholders.put(baseKey + ".z", new LiteralText(String.format("%.1f", pos.z)));
+            placeholders.put(baseKey + ".x", new LiteralText(doubleToStr(pos.x)));
+            placeholders.put(baseKey + ".y", new LiteralText(doubleToStr(pos.y)));
+            placeholders.put(baseKey + ".z", new LiteralText(doubleToStr(pos.z)));
         }
     }
 
@@ -118,6 +118,11 @@ public class Utils {
                 player1.sendSystemMessage(msg, Util.NIL_UUID);
             }
         }
+    }
+
+    private static String doubleToStr(double d) {
+        String str = String.format("%.1f", d);
+        return str.replace(',', '.');
     }
 
     // This class is very similar to BookLib Book.Page.Builder, TODO: merge?
