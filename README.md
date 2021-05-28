@@ -16,9 +16,15 @@ The config file is located in the config directory (`config/player_events.json`)
 {
   "death": {
     "actions": [
-      "${player} just died! F"
+      "${player} just died!"
     ],
     "broadcast_to_everyone": true
+  },
+  "first_join": {
+    "actions": [
+      "Welcome to the server ${player}! Remember to read the rules"
+    ],
+    "broadcast_to_everyone": false
   },
   "join": {
     "actions": [
@@ -74,15 +80,14 @@ Use `/pe reload` or `/player_events reload` to reload the mod config.
 You can use `/pe test <event>` or `/player_events test <event>` to test the actions on a specific
 event, or use `/pe test *` to test every event.
 
-### 2.0.0 supported events
+### 2.1.2 supported events
 * `death` - Executed when a player dies.
+* `first_join` - Executed when a player joins for first time.
 * `join` - Executed when a player joins.
-* `kill_entity` - Executed when a player kills an entity. 
-  * **Extra tokens:**
-  * `${killedEntity}` - the killed entity.
-* `kill_player` - Executed when a player kills another player.
-  * **Extra tokens:**
-  * `${killedPlayer}` - the killed player.
+* `kill_entity` - Executed when a player kills an entity. Extra tokens:
+    * `${killedEntity}` - the killed entity.
+* `kill_player` - Executed when a player kills another player. Extra tokens:
+    * `${killedPlayer}` - the killed player.
 * `leave` - Executed when a player leaves.
 
 ## Developing
@@ -129,6 +134,7 @@ Also, add this snippet to your `fabric.mod.json` if you want your mod to depend 
 
 #### Events
 * `death` - `me.bymartrixx.playerevents.api.event.PlayerDeathCallback.EVENT`
+* `first_join` - `me.bymartrixx.playerevents.api.event.PlayerFirstJoinCallback.EVENT`
 * `join` - `me.bymartrixx.playerevents.api.event.PlayerJoinCallback.EVENT`
 * `kill_entity` - `me.bymartrixx.playerevents.api.event.PlayerKillEntityCallback.EVENT`
 * `kill_player` - `me.bymartrixx.playerevents.api.event.PlayerKillPlayerCallback.EVENT`
