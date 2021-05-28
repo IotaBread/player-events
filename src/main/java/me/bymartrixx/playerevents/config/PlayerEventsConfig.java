@@ -290,6 +290,10 @@ public class PlayerEventsConfig {
         Map<String, Text> textPlaceholders = Maps.newHashMap();
         Utils.addCommandSourceTextPlaceholders(textPlaceholders, source, "player");
         Utils.addCommandSourceTextPlaceholders(textPlaceholders, source, "killedPlayer");
+
+        for (String action : this.killPlayer.actions) {
+            testAction(action, source, stringPlaceholders, textPlaceholders);
+        }
     }
 
     public void testEveryActionGroup(ServerCommandSource source) {
