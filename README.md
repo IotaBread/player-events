@@ -90,6 +90,17 @@ event, or use `/pe test *` to test every event.
     * `${killedPlayer}` - the killed player.
 * `leave` - Executed when a player leaves.
 
+### Troubleshooting
+If you get an error when initializing the server or when an action should be executed, here are
+steps on how to solve it.
+- "Invalid JSON syntax in the config file": This is most likely caused by having a command with
+  unescaped double quotes. To fix it:
+  1. Check what the exception says in the line below. It will indicate exactly where the error is.
+  2. Escape any double quotes inside the action with backslashes like `"` -> `\"`
+- "Invalid escape sequence"
+  This is caused because of an improperly escaped escape sequence like `\n` or `\u`. To fix it,
+  just add a backslash before the escape sequence backslash, for example `\n` -> `\\n` or `\\u` -> `\\\\u`
+
 ## Developing
 This part is for mod developers that would like to use the mod api.
 
