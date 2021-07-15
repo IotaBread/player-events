@@ -14,17 +14,16 @@ import me.bymartrixx.playerevents.command.PlayerEventsCommand;
 import me.bymartrixx.playerevents.config.PlayerEventsConfig;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
-import org.apache.logging.log4j.Level;
+import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class PlayerEvents implements DedicatedServerModInitializer {
     public static final Logger LOGGER = LogManager.getLogger();
     public static final Gson GSON = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).setPrettyPrinting().create();
+    private static int placeholderApiLoadStatus = -1; // -1 = not checked | 0 = not loaded | 1 = loaded
 
     public static final String MOD_ID = "player_events";
-    public static final String MOD_NAME = "Player Events";
-
     public static PlayerEventsConfig CONFIG;
 
     @Override
@@ -32,7 +31,7 @@ public class PlayerEvents implements DedicatedServerModInitializer {
         try {
             PlayerEventsConfig.Manager.loadConfig();
         } catch (JsonSyntaxException e) {
-            error("Invalid JSON syntax in the config file", e);
+            LOGGER.error("Invalid JSON syntax in the config file", e);
         }
 
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> PlayerEventsCommand.register(dispatcher));
@@ -50,19 +49,11 @@ public class PlayerEvents implements DedicatedServerModInitializer {
         PlayerKillPlayerCallback.EVENT.register(CONFIG::doKillPlayerActions);
     }
 
-    public static void log(Level level, String message) {
-        log(level, message, (Object) null);
-    }
+    public static boolean isPlaceholderApiLoaded() {
+        if (placeholderApiLoadStatus == -1) {
+            placeholderApiLoadStatus = FabricLoader.getInstance().isModLoaded("placeholder-api") ? 1 : 0;
+        }
 
-    public static void log(Level level, String message, Object ... fields){
-        LOGGER.log(level, "[" + MOD_NAME + "] " + message, fields);
-    }
-
-    public static void error(String message) {
-        LOGGER.error("[" + MOD_NAME + "] " + message);
-    }
-
-    public static void error(String message, Throwable t) {
-        LOGGER.error("[" + MOD_NAME + "] " + message, t);
+        return placeholderApiLoadStatus == 1;
     }
 }

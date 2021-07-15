@@ -45,7 +45,7 @@ public class PlayerEventsConfig {
             try (FileWriter fileWriter = new FileWriter(configFile)) {
                 fileWriter.write(jsonString);
             } catch (IOException e) {
-                PlayerEvents.error("Couldn't save Player Events config.", e);
+                PlayerEvents.LOGGER.error("Couldn't save Player Events config.", e);
             }
         }
 
@@ -65,7 +65,7 @@ public class PlayerEventsConfig {
                     }
                 }
             } catch (FileNotFoundException e) {
-                PlayerEvents.error("Couldn't load configuration for Player Events. Reverting to default.", e);
+                PlayerEvents.LOGGER.error("Couldn't load configuration for Player Events. Reverting to default.", e);
                 createConfigFile();
             }
         }
@@ -124,11 +124,15 @@ public class PlayerEventsConfig {
 
         if (action.startsWith("/")) {
             String command = Utils.replacePlaceholders(action, strPlaceholders);
-            command = PlaceholderAPI.parseString(PlaceholderAPI.parseString(command, player), server);
+            if (PlayerEvents.isPlaceholderApiLoaded()) {
+                command = PlaceholderAPI.parseString(PlaceholderAPI.parseString(command, player), server);
+            }
             server.getCommandManager().execute(server.getCommandSource(), command);
         } else {
             Text message = Utils.replaceTextPlaceholders(action, textPlaceholders);
-            message = PlaceholderAPI.parseText(PlaceholderAPI.parseText(message, player), server);
+            if (PlayerEvents.isPlaceholderApiLoaded()) {
+                message = PlaceholderAPI.parseText(PlaceholderAPI.parseText(message, player), server);
+            }
             Utils.message(player, message, broadcast);
         }
     }
@@ -152,20 +156,24 @@ public class PlayerEventsConfig {
 
         if (action.startsWith("/")) {
             String command = Utils.replacePlaceholders(action, strPlaceholders);
-            command = PlaceholderAPI.parseString(command, source.getMinecraftServer());
-            try {
-                command = PlaceholderAPI.parseString(command, source.getPlayer());
-            } catch (CommandSyntaxException ignored) {
-                // Ignore
+            if (PlayerEvents.isPlaceholderApiLoaded()) {
+                command = PlaceholderAPI.parseString(command, source.getMinecraftServer());
+                try {
+                    command = PlaceholderAPI.parseString(command, source.getPlayer());
+                } catch (CommandSyntaxException ignored) {
+                    // Ignore
+                }
             }
             source.sendFeedback(new LiteralText("[COMMAND] " + command), false);
         } else {
             Text message = Utils.replaceTextPlaceholders(action, textPlaceholders);
-            message = PlaceholderAPI.parseText(message, source.getMinecraftServer());
-            try {
-                message = PlaceholderAPI.parseText(message, source.getPlayer());
-            } catch (CommandSyntaxException ignored) {
-                // Ignore
+            if (PlayerEvents.isPlaceholderApiLoaded()) {
+                message = PlaceholderAPI.parseText(message, source.getMinecraftServer());
+                try {
+                    message = PlaceholderAPI.parseText(message, source.getPlayer());
+                } catch (CommandSyntaxException ignored) {
+                    // Ignore
+                }
             }
             source.sendFeedback(message, false);
         }
