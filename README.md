@@ -52,7 +52,23 @@ The config file is located in the config directory (`config/player_events.json`)
       "/say Hope to see you soon ${player}"
     ],
     "broadcast_to_everyone": true
-  }
+  },
+  "custom_commands": [
+    {
+      "command": "/plugins",
+      "actions": [
+        "Hey! We don't use plugins"
+      ],
+      "broadcast_to_everyone": false
+    },
+    {
+      "command": "/spawn",
+      "actions": [
+        "/tp ${player} 0 64 0 0 0"
+      ],
+      "broadcast_to_everyone": true
+    }
+  ]
 }
 ```
 
@@ -80,7 +96,7 @@ Use `/pe reload` or `/player_events reload` to reload the mod config.
 You can use `/pe test <event>` or `/player_events test <event>` to test the actions on a specific
 event, or use `/pe test *` to test every event.
 
-### 2.1.2 supported events
+### 2.1.3 supported events
 * `death` - Executed when a player dies.
 * `first_join` - Executed when a player joins for first time.
 * `join` - Executed when a player joins.
@@ -89,6 +105,9 @@ event, or use `/pe test *` to test every event.
 * `kill_player` - Executed when a player kills another player. Extra tokens:
     * `${killedPlayer}` - the killed player.
 * `leave` - Executed when a player leaves.
+
+Additionally, you can create simple commands (if you want a more complex command, this mod isn't what you
+are looking for) or listen to existing ones.
 
 ### Troubleshooting
 If you get an error when initializing the server or when an action should be executed, here are
@@ -150,6 +169,7 @@ Also, add this snippet to your `fabric.mod.json` if you want your mod to depend 
 * `kill_entity` - `me.bymartrixx.playerevents.api.event.PlayerKillEntityCallback.EVENT`
 * `kill_player` - `me.bymartrixx.playerevents.api.event.PlayerKillPlayerCallback.EVENT`
 * `leave` - `me.bymartrixx.playerevents.api.event.PlayerLeaveCallback.EVENT`
+* Command executed - `me.bymartrixx.playerevents.api.event.CommandExecutionCallback.EVENT`
 
 #### Note
 The package `io.github.bymartrixx.playerevents.api` has been moved to `me.bymartrixx.playerevents.api`,

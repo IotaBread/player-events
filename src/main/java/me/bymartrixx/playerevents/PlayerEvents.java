@@ -4,6 +4,7 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import me.bymartrixx.playerevents.api.event.CommandExecutionCallback;
 import me.bymartrixx.playerevents.api.event.PlayerDeathCallback;
 import me.bymartrixx.playerevents.api.event.PlayerFirstJoinCallback;
 import me.bymartrixx.playerevents.api.event.PlayerJoinCallback;
@@ -34,7 +35,10 @@ public class PlayerEvents implements DedicatedServerModInitializer {
             LOGGER.error("Invalid JSON syntax in the config file", e);
         }
 
-        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> PlayerEventsCommand.register(dispatcher));
+        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
+            PlayerEventsCommand.register(dispatcher);
+            CONFIG.registerCustomCommands(dispatcher);
+        });
 
         PlayerDeathCallback.EVENT.register((player, source) -> CONFIG.doDeathActions(player));
 
@@ -47,6 +51,8 @@ public class PlayerEvents implements DedicatedServerModInitializer {
         PlayerKillEntityCallback.EVENT.register(CONFIG::doKillEntityActions);
 
         PlayerKillPlayerCallback.EVENT.register(CONFIG::doKillPlayerActions);
+
+        CommandExecutionCallback.EVENT.register(CONFIG::doCustomCommandsActions);
     }
 
     public static boolean isPlaceholderApiLoaded() {

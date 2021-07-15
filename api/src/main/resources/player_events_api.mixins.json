@@ -3,6 +3,7 @@
   "package": "me.bymartrixx.playerevents.api.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "CommandExecutionMixin",
     "PlayerDeathMixin",
     "PlayerJoinMixin",
     "PlayerLeaveMixin",

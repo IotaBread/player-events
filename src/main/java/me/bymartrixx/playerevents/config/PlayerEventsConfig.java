@@ -1,13 +1,16 @@
 package me.bymartrixx.playerevents.config;
 
 import com.google.common.collect.Maps;
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.tree.CommandNode;
 import eu.pb4.placeholders.PlaceholderAPI;
 import me.bymartrixx.playerevents.PlayerEvents;
 import me.bymartrixx.playerevents.Utils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
@@ -71,40 +74,42 @@ public class PlayerEventsConfig {
         }
     }
 
-    private final Actions death;
-    private final Actions firstJoin;
-    private final Actions join;
-    private final Actions killEntity;
-    private final Actions killPlayer;
-    private final Actions leave;
+    private final ActionList death;
+    private final ActionList firstJoin;
+    private final ActionList join;
+    private final ActionList killEntity;
+    private final ActionList killPlayer;
+    private final ActionList leave;
+    private final CustomCommandActionList[] customCommands;
 
     public PlayerEventsConfig() {
-        this.death = new Actions();
-        this.firstJoin = new Actions();
-        this.join = new Actions();
-        this.killPlayer = new Actions();
-        this.killEntity = new Actions();
-        this.leave = new Actions();
+        this.death = new ActionList();
+        this.firstJoin = new ActionList();
+        this.join = new ActionList();
+        this.killPlayer = new ActionList();
+        this.killEntity = new ActionList();
+        this.leave = new ActionList();
+        this.customCommands = new CustomCommandActionList[]{};
     }
 
-    private static void doSimpleAction(Actions actions, ServerPlayerEntity player) {
+    private static void doSimpleAction(ActionList actionList, ServerPlayerEntity player) {
         Map<String, String> stringPlaceholders = Maps.newHashMap();
         Utils.addEntityPlaceholders(stringPlaceholders, player, "player");
         Map<String, Text> textPlaceholders = Maps.newHashMap();
         Utils.addEntityTextPlaceholders(textPlaceholders, player, "player");
-        for (String action : actions.actions) {
-            doAction(action, player, stringPlaceholders, textPlaceholders, actions.broadcastToEveryone);
+        for (String action : actionList.actions) {
+            doAction(action, player, stringPlaceholders, textPlaceholders, actionList.broadcastToEveryone);
         }
     }
 
-    private static void doSimpleAction(Actions actions, ServerPlayerEntity player,
+    private static void doSimpleAction(ActionList actionList, ServerPlayerEntity player,
                                        MinecraftServer server) {
         Map<String, String> stringPlaceholders = Maps.newHashMap();
         Utils.addEntityPlaceholders(stringPlaceholders, player, "player");
         Map<String, Text> textPlaceholders = Maps.newHashMap();
         Utils.addEntityTextPlaceholders(textPlaceholders, player, "player");
-        for (String action : actions.actions) {
-            doAction(action, player, server, stringPlaceholders, textPlaceholders, actions.broadcastToEveryone);
+        for (String action : actionList.actions) {
+            doAction(action, player, server, stringPlaceholders, textPlaceholders, actionList.broadcastToEveryone);
         }
     }
 
@@ -137,15 +142,15 @@ public class PlayerEventsConfig {
         }
     }
 
-    public static void testSimpleAction(Actions actions, ServerCommandSource source, String title) {
-        String message = String.format(title, actions.broadcastToEveryone ? "Send to everyone" : "Send only to the player");
+    public static void testSimpleAction(ActionList actionList, ServerCommandSource source, String title) {
+        String message = String.format(title, actionList.broadcastToEveryone ? "Send to everyone" : "Send only to the player");
         source.sendFeedback(new LiteralText("" + Formatting.GRAY + Formatting.ITALIC + message), false);
 
         Map<String, String> stringPlaceholders = Maps.newHashMap();
         Utils.addCommandSourcePlaceholders(stringPlaceholders, source, "player");
         Map<String, Text> textPlaceholders = Maps.newHashMap();
         Utils.addCommandSourceTextPlaceholders(textPlaceholders, source, "player");
-        for (String action : actions.actions) {
+        for (String action : actionList.actions) {
             testAction(action, source, stringPlaceholders, textPlaceholders);
         }
     }
@@ -245,6 +250,18 @@ public class PlayerEventsConfig {
         }
     }
 
+    public void doCustomCommandsActions(String command, ServerCommandSource source) {
+        for (CustomCommandActionList actionList : this.customCommands) {
+            if (actionList.getCommandStr().matches(command)) {
+                try {
+                    doSimpleAction(actionList, source.getPlayer());
+                } catch (CommandSyntaxException e) {
+                    PlayerEvents.LOGGER.error("This should not happen, please report it to the mod author, attaching the logs", e);
+                }
+            }
+        }
+    }
+
     public void testDeathActions(ServerCommandSource source) {
         testSimpleAction(this.death, source, "Death actions (%s):");
     }
@@ -304,6 +321,22 @@ public class PlayerEventsConfig {
         }
     }
 
+    public void testCustomCommandsActions(ServerCommandSource source) {
+        Map<String, String> stringPlaceholders = Maps.newHashMap();
+        Utils.addCommandSourcePlaceholders(stringPlaceholders, source, "player");
+        Map<String, Text> textPlaceholders = Maps.newHashMap();
+        Utils.addCommandSourceTextPlaceholders(textPlaceholders, source, "player");
+
+        for (CustomCommandActionList actionList : this.customCommands) {
+            String message = String.format("'%s' actions ('%s'):", actionList.getCommandStr(), actionList.broadcastToEveryone ? "Send to everyone" : "Send only to the player");
+            source.sendFeedback(new LiteralText("§7§o" + message), false);
+
+            for (String action : actionList.actions) {
+                testAction(action, source, stringPlaceholders, textPlaceholders);
+            }
+        }
+    }
+
     public void testEveryActionGroup(ServerCommandSource source) {
         this.testDeathActions(source);
         this.testFirstJoinActions(source);
@@ -311,15 +344,43 @@ public class PlayerEventsConfig {
         this.testKillEntityActions(source);
         this.testKillPlayerActions(source);
         this.testLeaveActions(source);
+        this.testCustomCommandsActions(source);
     }
 
-    public static class Actions {
-        private final String[] actions;
-        private final boolean broadcastToEveryone;
+    public void registerCustomCommands(CommandDispatcher<ServerCommandSource> dispatcher) {
+        CommandNode<ServerCommandSource> root = dispatcher.getRoot();
+        for (CustomCommandActionList actionList : this.customCommands) {
+            CommandNode<ServerCommandSource> node = root.getChild(actionList.getCommand());
+            if (node == null) {
+                dispatcher.register(CommandManager.literal(actionList.getCommand()));
+            }
+        }
+    }
 
-        public Actions() {
+    public static class ActionList {
+        protected final String[] actions;
+        protected final boolean broadcastToEveryone;
+
+        public ActionList() {
             this.actions = new String[] {};
             this.broadcastToEveryone = true;
+        }
+    }
+
+    public static class CustomCommandActionList extends ActionList {
+        protected final String command;
+
+        public CustomCommandActionList() {
+            super();
+            this.command = "";
+        }
+
+        public String getCommandStr() {
+            return this.command.startsWith("/") ? this.command : "/" + this.command;
+        }
+
+        public String getCommand() {
+            return !this.command.startsWith("/") ? this.command : this.command.substring(1);
         }
     }
 }

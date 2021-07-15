@@ -151,7 +151,8 @@ task modrinth (type: TaskModrinthUpload, dependsOn: build) {
     addGameVersion('1.16.3')
     addGameVersion('1.16.4')
     addGameVersion('1.16.5')
-    addGameVersion('1.17-pre1') // TODO: Change to 1.17 when available
+    addGameVersion('1.17')
+    addGameVersion('1.17.1')
     addLoader('fabric')
     addFile(project(':api').remapJar)
 }
@@ -170,6 +171,8 @@ curseforge {
         addGameVersion '1.16.3'
         addGameVersion '1.16.4'
         addGameVersion '1.16.5'
+        addGameVersion '1.17'
+        addGameVersion '1.17.1'
         addGameVersion 'Fabric'
         mainArtifact(remapJar) {
             displayName = "Player Events ${version}"
