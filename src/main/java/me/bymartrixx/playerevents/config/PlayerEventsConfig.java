@@ -352,7 +352,7 @@ public class PlayerEventsConfig {
         for (CustomCommandActionList actionList : this.customCommands) {
             CommandNode<ServerCommandSource> node = root.getChild(actionList.getCommand());
             if (node == null) {
-                dispatcher.register(CommandManager.literal(actionList.getCommand()));
+                dispatcher.register(CommandManager.literal(actionList.getCommand()).executes(ctx -> 1));
             }
         }
     }
