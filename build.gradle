@@ -123,9 +123,7 @@ publishing {
         }
     }
 
-    // select the repositories you want to publish to
     repositories {
-        // uncomment to publish to the local maven
         maven {
             url 's3://maven.bymartrixx.me'
             credentials(AwsCredentials) {
@@ -189,3 +187,5 @@ curseforge {
         forgeGradleIntegration = false
     }
 }
+
+publish.finalizedBy tasks.curseforge, tasks.modrinth, project(':api').tasks.publish

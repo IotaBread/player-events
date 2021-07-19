@@ -144,13 +144,14 @@ dependencies {
     // Using the version from the gradle.properties
     modImplementation "me.bymartrixx.player-events:api:${project.player_events_api_version}"
 
-    // Directly setting the version
-    modImplementation "me.bymartrixx.player-events:api:2.0.0"
+    // Directly setting the version (replace 2.1.3 with the latest release available)
+    modImplementation "me.bymartrixx.player-events:api:2.1.3"
 }
 ```
 Add this snippet to your `gradle.properties` if you aren't directly setting the version to the build.gradle file:
 ```properties
-player_events_api_version = 2.0.0
+# Replace 2.1.3 with the latest release available
+player_events_api_version = 2.1.3
 ```
 
 Also, add this snippet to your `fabric.mod.json` if you want your mod to depend on the api:
