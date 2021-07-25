@@ -1,5 +1,6 @@
 package me.bymartrixx.playerevents.config;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -16,12 +17,14 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 public class PlayerEventsConfig {
@@ -36,8 +39,6 @@ public class PlayerEventsConfig {
         }
 
         public static void createConfigFile() {
-            PlayerEvents.CONFIG = new PlayerEventsConfig();
-
             saveConfig();
         }
 
@@ -64,7 +65,7 @@ public class PlayerEventsConfig {
 
                     PlayerEventsConfig savedConfig = PlayerEvents.GSON.fromJson(bReader, PlayerEventsConfig.class);
                     if (savedConfig != null) {
-                        PlayerEvents.CONFIG = savedConfig;
+                        PlayerEvents.CONFIG.load(savedConfig);
                     }
                 }
             } catch (FileNotFoundException e) {
@@ -80,16 +81,16 @@ public class PlayerEventsConfig {
     private final ActionList killEntity;
     private final ActionList killPlayer;
     private final ActionList leave;
-    private final CustomCommandActionList[] customCommands;
+    private final List<CustomCommandActionList> customCommands;
 
     public PlayerEventsConfig() {
         this.death = new ActionList();
         this.firstJoin = new ActionList();
         this.join = new ActionList();
-        this.killPlayer = new ActionList();
         this.killEntity = new ActionList();
+        this.killPlayer = new ActionList();
         this.leave = new ActionList();
-        this.customCommands = new CustomCommandActionList[]{};
+        this.customCommands = Lists.newArrayList();
     }
 
     private static void doSimpleAction(ActionList actionList, ServerPlayerEntity player) {
@@ -98,7 +99,7 @@ public class PlayerEventsConfig {
         Map<String, Text> textPlaceholders = Maps.newHashMap();
         Utils.addEntityTextPlaceholders(textPlaceholders, player, "player");
         for (String action : actionList.actions) {
-            doAction(action, player, stringPlaceholders, textPlaceholders, actionList.broadcastToEveryone);
+            doAction(action, player, stringPlaceholders, textPlaceholders, actionList.doBroadcastToEveryone());
         }
     }
 
@@ -109,7 +110,7 @@ public class PlayerEventsConfig {
         Map<String, Text> textPlaceholders = Maps.newHashMap();
         Utils.addEntityTextPlaceholders(textPlaceholders, player, "player");
         for (String action : actionList.actions) {
-            doAction(action, player, server, stringPlaceholders, textPlaceholders, actionList.broadcastToEveryone);
+            doAction(action, player, server, stringPlaceholders, textPlaceholders, actionList.doBroadcastToEveryone());
         }
     }
 
@@ -143,7 +144,7 @@ public class PlayerEventsConfig {
     }
 
     public static void testSimpleAction(ActionList actionList, ServerCommandSource source, String title) {
-        String message = String.format(title, actionList.broadcastToEveryone ? "Send to everyone" : "Send only to the player");
+        String message = String.format(title, actionList.doBroadcastToEveryone() ? "Send to everyone" : "Send only to the player");
         source.sendFeedback(new LiteralText("" + Formatting.GRAY + Formatting.ITALIC + message), false);
 
         Map<String, String> stringPlaceholders = Maps.newHashMap();
@@ -184,27 +185,39 @@ public class PlayerEventsConfig {
         }
     }
 
-    public String[] getDeathActions() {
+    private void load(PlayerEventsConfig newConfig) {
+        this.death.load(newConfig.death);
+        this.firstJoin.load(newConfig.firstJoin);
+        this.join.load(newConfig.join);
+        this.killEntity.load(newConfig.killEntity);
+        this.killPlayer.load(newConfig.killPlayer);
+        this.leave.load(newConfig.leave);
+
+        this.customCommands.clear();
+        this.customCommands.addAll(newConfig.customCommands);
+    }
+
+    public List<String> getDeathActions() {
         return this.death.actions;
     }
 
-    public String[] getFirstJoinActions() {
+    public List<String> getFirstJoinActions() {
         return this.firstJoin.actions;
     }
 
-    public String[] getJoinActions() {
+    public List<String> getJoinActions() {
         return this.join.actions;
     }
 
-    public String[] getKillEntityActions() {
+    public List<String> getKillEntityActions() {
         return this.killEntity.actions;
     }
 
-    public String[] getKillPlayerActions() {
+    public List<String> getKillPlayerActions() {
         return this.killPlayer.actions;
     }
 
-    public String[] getLeaveActions() {
+    public List<String> getLeaveActions() {
         return this.leave.actions;
     }
 
@@ -233,7 +246,7 @@ public class PlayerEventsConfig {
         Utils.addEntityTextPlaceholders(textPlaceholders, killedEntity, "killedEntity");
 
         for (String action : this.killEntity.actions) {
-            doAction(action, player, strPlaceholders, textPlaceholders, this.killEntity.broadcastToEveryone);
+            doAction(action, player, strPlaceholders, textPlaceholders, this.killEntity.doBroadcastToEveryone());
         }
     }
 
@@ -246,7 +259,7 @@ public class PlayerEventsConfig {
         Utils.addEntityTextPlaceholders(textPlaceholders, killedPlayer, "killedPlayer");
 
         for (String action : this.killPlayer.actions) {
-            doAction(action, player, strPlaceholders, textPlaceholders, this.killPlayer.broadcastToEveryone);
+            doAction(action, player, strPlaceholders, textPlaceholders, this.killPlayer.doBroadcastToEveryone());
         }
     }
 
@@ -279,7 +292,7 @@ public class PlayerEventsConfig {
     }
 
     public void testKillEntityActions(ServerCommandSource source) {
-        String message = String.format("Kill entity actions (%s):", this.killEntity.broadcastToEveryone ? "Send to everyone" : "Send only to the player");
+        String message = String.format("Kill entity actions (%s):", this.killEntity.doBroadcastToEveryone() ? "Send to everyone" : "Send only to the player");
         source.sendFeedback(new LiteralText("" + Formatting.GRAY + Formatting.ITALIC + message), false);
 
         Map<String, String> stringPlaceholders = Maps.newHashMap();
@@ -306,7 +319,7 @@ public class PlayerEventsConfig {
     }
 
     public void testKillPlayerActions(ServerCommandSource source) {
-        String message = String.format("Kill player actions (%s):", this.killPlayer.broadcastToEveryone ? "Send to everyone" : "Send only to the player");
+        String message = String.format("Kill player actions (%s):", this.killPlayer.doBroadcastToEveryone() ? "Send to everyone" : "Send only to the player");
         source.sendFeedback(new LiteralText("" + Formatting.GRAY + Formatting.ITALIC + message), false);
 
         Map<String, String> stringPlaceholders = Maps.newHashMap();
@@ -328,7 +341,7 @@ public class PlayerEventsConfig {
         Utils.addCommandSourceTextPlaceholders(textPlaceholders, source, "player");
 
         for (CustomCommandActionList actionList : this.customCommands) {
-            String message = String.format("'%s' actions ('%s'):", actionList.getCommandStr(), actionList.broadcastToEveryone ? "Send to everyone" : "Send only to the player");
+            String message = String.format("'%s' actions ('%s'):", actionList.getCommandStr(), actionList.doBroadcastToEveryone() ? "Send to everyone" : "Send only to the player");
             source.sendFeedback(new LiteralText("§7§o" + message), false);
 
             for (String action : actionList.actions) {
@@ -358,17 +371,27 @@ public class PlayerEventsConfig {
     }
 
     public static class ActionList {
-        protected final String[] actions;
-        protected final boolean broadcastToEveryone;
+        protected final List<String> actions;
+        protected boolean broadcastToEveryone;
 
         public ActionList() {
-            this.actions = new String[] {};
+            this.actions = Lists.newArrayList();
             this.broadcastToEveryone = true;
+        }
+
+        protected void load(ActionList list) {
+            this.actions.clear();
+            this.actions.addAll(list.actions);
+            this.broadcastToEveryone = list.broadcastToEveryone;
+        }
+
+        public boolean doBroadcastToEveryone() {
+            return this.broadcastToEveryone;
         }
     }
 
     public static class CustomCommandActionList extends ActionList {
-        protected final String command;
+        protected String command;
 
         public CustomCommandActionList() {
             super();

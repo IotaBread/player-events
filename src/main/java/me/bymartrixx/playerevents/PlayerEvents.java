@@ -25,7 +25,7 @@ public class PlayerEvents implements DedicatedServerModInitializer {
     private static int placeholderApiLoadStatus = -1; // -1 = not checked | 0 = not loaded | 1 = loaded
 
     public static final String MOD_ID = "player_events";
-    public static PlayerEventsConfig CONFIG;
+    public static final PlayerEventsConfig CONFIG = new PlayerEventsConfig();
 
     @Override
     public void onInitializeServer() {
