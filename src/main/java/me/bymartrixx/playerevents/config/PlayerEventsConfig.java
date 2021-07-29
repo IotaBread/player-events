@@ -265,7 +265,7 @@ public class PlayerEventsConfig {
 
     public void doCustomCommandsActions(String command, ServerCommandSource source) {
         for (CustomCommandActionList actionList : this.customCommands) {
-            if (actionList.getCommandStr().matches(command)) {
+            if (actionList.getCommandStr().startsWith(command)) {
                 try {
                     doSimpleAction(actionList, source.getPlayer());
                 } catch (CommandSyntaxException e) {
