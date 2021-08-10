@@ -10,6 +10,8 @@
 A Fabric mod that executes and sends configurable commands and messages respectively on certain
 events triggered by a player, such as Dying, Joining a server, Killing another player, etc.
 
+**Since 2.2.0** Datapacks can define functions that will be executed on an event, using the corresponding function tag `#player_events:<event>`
+
 The config file is located in the config directory (`config/player_events.json`) and looks like this:
 
 ```JSON
@@ -18,40 +20,46 @@ The config file is located in the config directory (`config/player_events.json`)
     "actions": [
       "${player} just died!"
     ],
-    "broadcast_to_everyone": true
+    "broadcast_to_everyone": true,
+    "pick_message_randomly": false
   },
   "first_join": {
     "actions": [
       "Welcome to the server ${player}! Remember to read the rules"
     ],
-    "broadcast_to_everyone": false
+    "broadcast_to_everyone": false,
+    "pick_message_randomly": false
   },
   "join": {
     "actions": [
       "Welcome ${player}",
       "/say Hello ${player}"
     ],
-    "broadcast_to_everyone": true
+    "broadcast_to_everyone": true,
+    "pick_message_randomly": false
   },
   "kill_entity": {
     "actions": [
       "${player} killed ${killedEntity}"
     ],
-    "broadcast_to_everyone": true
+    "broadcast_to_everyone": true,
+    "pick_message_randomly": false
   },
   "kill_player": {
     "actions": [
       "${player} killed ${killedPlayer}",
       "F ${killedPlayer}"
     ],
-    "broadcast_to_everyone": true
+    "broadcast_to_everyone": true,
+    "pick_message_randomly": true
   },
   "leave": {
     "actions": [
       "Goodbye ${player}!",
       "/say Hope to see you soon ${player}"
     ],
-    "broadcast_to_everyone": true
+    "broadcast_to_everyone": true,
+    "pick_message_randomly": false
   },
   "custom_commands": [
     {
@@ -59,14 +67,16 @@ The config file is located in the config directory (`config/player_events.json`)
       "actions": [
         "Hey! We don't use plugins"
       ],
-      "broadcast_to_everyone": false
+      "broadcast_to_everyone": false,
+      "pick_message_randomly": false
     },
     {
       "command": "/spawn",
       "actions": [
         "/tp ${player} 0 64 0 0 0"
       ],
-      "broadcast_to_everyone": true
+      "broadcast_to_everyone": true,
+      "pick_message_randomly": false
     }
   ]
 }
@@ -76,6 +86,8 @@ On the JSON file you can declare, under the `actions` array on each `<event>` ob
 to be sent and/or executed on that event. You can also set these messages to be sent only to the
 player by setting `broadcast_to_everyone` to `false`, but this won't work with events like `leave`
 (because the player isn't in the server anymore).
+
+**Since 2.2.0** You can choose to randomly send one of the defined messages for a given event by setting `pick_message_randomly` to `true`.
 
 Every event has a `${player}` token, and each instance of this token will be replaced with the player
 that triggers the event. Other events have extra tokens that work the same way.
@@ -96,7 +108,7 @@ Use `/pe reload` or `/player_events reload` to reload the mod config.
 You can use `/pe test <event>` or `/player_events test <event>` to test the actions on a specific
 event, or use `/pe test *` to test every event.
 
-### 2.1.3 supported events
+### 2.2.0 supported events
 * `death` - Executed when a player dies.
 * `first_join` - Executed when a player joins for first time.
 * `join` - Executed when a player joins.
@@ -105,6 +117,7 @@ event, or use `/pe test *` to test every event.
 * `kill_player` - Executed when a player kills another player. Extra tokens:
     * `${killedPlayer}` - the killed player.
 * `leave` - Executed when a player leaves.
+* `custom_commands` - Custom defined events triggered by using a defined command. **Note: This event does not support datapack functions**
 
 Additionally, you can create simple commands (if you want a more complex command, this mod isn't what you
 are looking for) or listen to existing ones.

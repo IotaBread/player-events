@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "me.bymartrixx.playerevents.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "CommandFunctionManagerAccessor"
+  ],
+  "client": [],
+  "server": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

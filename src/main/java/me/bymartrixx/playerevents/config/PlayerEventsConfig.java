@@ -8,15 +8,19 @@ import com.mojang.brigadier.tree.CommandNode;
 import eu.pb4.placeholders.PlaceholderAPI;
 import me.bymartrixx.playerevents.PlayerEvents;
 import me.bymartrixx.playerevents.Utils;
+import me.bymartrixx.playerevents.mixin.CommandFunctionManagerAccessor;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.function.CommandFunction;
+import net.minecraft.server.function.CommandFunctionManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -24,6 +28,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -98,7 +103,17 @@ public class PlayerEventsConfig {
         Utils.addEntityPlaceholders(stringPlaceholders, player, "player");
         Map<String, Text> textPlaceholders = Maps.newHashMap();
         Utils.addEntityTextPlaceholders(textPlaceholders, player, "player");
-        for (String action : actionList.actions) {
+
+        List<String> actions;
+        if (actionList.pickMessageRandomly()) {
+            actions = actionList.getCommandActions();
+            List<String> messageActions = actionList.getMessageActions();
+            String message = messageActions.get(player.getRandom().nextInt(messageActions.size()));
+            actions.add(message);
+        } else {
+            actions = actionList.actions;
+        }
+        for (String action : actions) {
             doAction(action, player, stringPlaceholders, textPlaceholders, actionList.doBroadcastToEveryone());
         }
     }
@@ -109,7 +124,17 @@ public class PlayerEventsConfig {
         Utils.addEntityPlaceholders(stringPlaceholders, player, "player");
         Map<String, Text> textPlaceholders = Maps.newHashMap();
         Utils.addEntityTextPlaceholders(textPlaceholders, player, "player");
-        for (String action : actionList.actions) {
+
+        List<String> actions;
+        if (actionList.pickMessageRandomly()) {
+            actions = actionList.getCommandActions();
+            List<String> messageActions = actionList.getMessageActions();
+            String message = messageActions.get(player.getRandom().nextInt(messageActions.size()));
+            actions.add(message);
+        } else {
+            actions = actionList.actions;
+        }
+        for (String action : actions) {
             doAction(action, player, server, stringPlaceholders, textPlaceholders, actionList.doBroadcastToEveryone());
         }
     }
@@ -143,8 +168,18 @@ public class PlayerEventsConfig {
         }
     }
 
+    private static void executeFunctions(String id, MinecraftServer server) {
+        Identifier tag = new Identifier("player_events", id);
+        CommandFunctionManager commandFunctionManager = server.getCommandFunctionManager();
+        Collection<CommandFunction> functions = ((CommandFunctionManagerAccessor) commandFunctionManager).getFunctionLoader().getTags().getTagOrEmpty(tag).values();
+        ((CommandFunctionManagerAccessor) commandFunctionManager).invokeExecuteAll(functions, tag);
+    }
+
     public static void testSimpleAction(ActionList actionList, ServerCommandSource source, String title) {
         String message = String.format(title, actionList.doBroadcastToEveryone() ? "Send to everyone" : "Send only to the player");
+        if (actionList.pickMessageRandomly()) {
+            message = message + " [Message picked randomly]";
+        }
         source.sendFeedback(new LiteralText("" + Formatting.GRAY + Formatting.ITALIC + message), false);
 
         Map<String, String> stringPlaceholders = Maps.newHashMap();
@@ -223,18 +258,22 @@ public class PlayerEventsConfig {
 
     public void doDeathActions(ServerPlayerEntity player) {
         doSimpleAction(this.death, player);
+        executeFunctions("death", player.getServer());
     }
 
     public void doFirstJoinActions(ServerPlayerEntity player, MinecraftServer server) {
         doSimpleAction(this.firstJoin, player, server);
+        executeFunctions("first_join", server);
     }
 
     public void doJoinActions(ServerPlayerEntity player, MinecraftServer server) {
         doSimpleAction(this.join, player, server);
+        executeFunctions("join", server);
     }
 
     public void doLeaveActions(ServerPlayerEntity player, MinecraftServer server) {
         doSimpleAction(this.leave, player, server);
+        executeFunctions("leave", server);
     }
 
     public void doKillEntityActions(ServerPlayerEntity player, Entity killedEntity) {
@@ -248,6 +287,8 @@ public class PlayerEventsConfig {
         for (String action : this.killEntity.actions) {
             doAction(action, player, strPlaceholders, textPlaceholders, this.killEntity.doBroadcastToEveryone());
         }
+
+        executeFunctions("kill_entity", player.getServer());
     }
 
     public void doKillPlayerActions(ServerPlayerEntity player, ServerPlayerEntity killedPlayer) {
@@ -261,6 +302,8 @@ public class PlayerEventsConfig {
         for (String action : this.killPlayer.actions) {
             doAction(action, player, strPlaceholders, textPlaceholders, this.killPlayer.doBroadcastToEveryone());
         }
+
+        executeFunctions("kill_player", player.getServer());
     }
 
     public void doCustomCommandsActions(String command, ServerCommandSource source) {
@@ -373,6 +416,7 @@ public class PlayerEventsConfig {
     public static class ActionList {
         protected final List<String> actions;
         protected boolean broadcastToEveryone;
+        protected boolean pickMessageRandomly = false;
 
         public ActionList() {
             this.actions = Lists.newArrayList();
@@ -383,10 +427,35 @@ public class PlayerEventsConfig {
             this.actions.clear();
             this.actions.addAll(list.actions);
             this.broadcastToEveryone = list.broadcastToEveryone;
+            this.pickMessageRandomly = list.pickMessageRandomly;
         }
 
         public boolean doBroadcastToEveryone() {
             return this.broadcastToEveryone;
+        }
+
+        public boolean pickMessageRandomly() {
+            return this.pickMessageRandomly;
+        }
+
+        public List<String> getCommandActions() {
+            List<String> commandActions = Lists.newArrayList();
+            for (String action : this.actions) {
+                if (action.startsWith("/")) {
+                    commandActions.add(action);
+                }
+            }
+            return commandActions;
+        }
+
+        public List<String> getMessageActions() {
+            List<String> messageActions = Lists.newArrayList();
+            for (String action : this.actions) {
+                if (!action.startsWith("/")) {
+                    messageActions.add(action);
+                }
+            }
+            return messageActions;
         }
     }
 

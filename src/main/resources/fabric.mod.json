@@ -21,6 +21,9 @@
       "me.bymartrixx.playerevents.PlayerEvents"
     ]
   },
+  "mixins": [
+    "player_events.mixins.json"
+  ],
 
   "depends": {
     "player_events_api": "*",
