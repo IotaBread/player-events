@@ -80,6 +80,7 @@ public class PlayerEventsConfig {
         }
     }
 
+    private final ActionList firstDeath;
     private final ActionList death;
     private final ActionList firstJoin;
     private final ActionList join;
@@ -89,6 +90,7 @@ public class PlayerEventsConfig {
     private final List<CustomCommandActionList> customCommands;
 
     public PlayerEventsConfig() {
+        this.firstDeath = new ActionList();
         this.death = new ActionList();
         this.firstJoin = new ActionList();
         this.join = new ActionList();
@@ -221,6 +223,7 @@ public class PlayerEventsConfig {
     }
 
     private void load(PlayerEventsConfig newConfig) {
+        this.firstDeath.load(newConfig.firstDeath);
         this.death.load(newConfig.death);
         this.firstJoin.load(newConfig.firstJoin);
         this.join.load(newConfig.join);
@@ -230,6 +233,10 @@ public class PlayerEventsConfig {
 
         this.customCommands.clear();
         this.customCommands.addAll(newConfig.customCommands);
+    }
+
+    public List<String> getFirstDeathActions() {
+        return this.firstDeath.actions;
     }
 
     public List<String> getDeathActions() {
@@ -254,6 +261,11 @@ public class PlayerEventsConfig {
 
     public List<String> getLeaveActions() {
         return this.leave.actions;
+    }
+
+    public void doFirstDeathActions(ServerPlayerEntity player) {
+        doSimpleAction(this.death, player);
+        executeFunctions("first_death", player.getServer());
     }
 
     public void doDeathActions(ServerPlayerEntity player) {
@@ -316,6 +328,10 @@ public class PlayerEventsConfig {
                 }
             }
         }
+    }
+
+    public void testFirstDeathActions(ServerCommandSource source) {
+        testSimpleAction(this.firstDeath, source, "Fist death actions (%s):");
     }
 
     public void testDeathActions(ServerCommandSource source) {
@@ -394,6 +410,7 @@ public class PlayerEventsConfig {
     }
 
     public void testEveryActionGroup(ServerCommandSource source) {
+        this.testFirstDeathActions(source);
         this.testDeathActions(source);
         this.testFirstJoinActions(source);
         this.testJoinActions(source);

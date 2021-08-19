@@ -1,5 +1,9 @@
 # Changelog
-## 2.2.0
+## 2.2.1
+* Add `first_death` event
+* Add missing test command `custom_commands`
+
+## 2.2.0 (09-08-2021)
 * Add datapack functions support
 * Add random message picking
 
