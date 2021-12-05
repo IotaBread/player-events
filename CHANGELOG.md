@@ -1,5 +1,8 @@
 # Changelog
-## 2.2.1
+## 2.2.2
+* Update to 1.18
+
+## 2.2.1 (18-08-2021)
 * Add `first_death` event
 * Add missing test command `custom_commands`
 
