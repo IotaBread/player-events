@@ -6,6 +6,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.CommandNode;
 import eu.pb4.placeholders.PlaceholderAPI;
+import eu.pb4.placeholders.TextParser;
 import me.bymartrixx.playerevents.PlayerEvents;
 import me.bymartrixx.playerevents.Utils;
 import me.bymartrixx.playerevents.mixin.CommandFunctionManagerAccessor;
@@ -200,7 +201,8 @@ public class PlayerEventsConfig {
         if (action.startsWith("/")) {
             String command = Utils.replacePlaceholders(action, strPlaceholders);
             if (PlayerEvents.isPlaceholderApiLoaded()) {
-                command = PlaceholderAPI.parseString(command, source.getMinecraftServer());
+                // What's the replacement??
+                command = PlaceholderAPI.parseString(command, source.getServer());
                 try {
                     command = PlaceholderAPI.parseString(command, source.getPlayer());
                 } catch (CommandSyntaxException ignored) {
@@ -211,7 +213,7 @@ public class PlayerEventsConfig {
         } else {
             Text message = Utils.replaceTextPlaceholders(action, textPlaceholders);
             if (PlayerEvents.isPlaceholderApiLoaded()) {
-                message = PlaceholderAPI.parseText(message, source.getMinecraftServer());
+                message = PlaceholderAPI.parseText(message, source.getServer());
                 try {
                     message = PlaceholderAPI.parseText(message, source.getPlayer());
                 } catch (CommandSyntaxException ignored) {

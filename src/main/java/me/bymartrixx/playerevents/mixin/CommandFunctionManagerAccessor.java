@@ -12,9 +12,9 @@ import java.util.Collection;
 
 @Mixin(CommandFunctionManager.class)
 public interface CommandFunctionManagerAccessor {
-    @Accessor("field_25333")
+    @Accessor("loader")
     FunctionLoader getFunctionLoader();
 
-    @Invoker("method_29460")
+    @Invoker("executeAll")
     void invokeExecuteAll(Collection<CommandFunction> functions, Identifier tag);
 }
