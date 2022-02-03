@@ -1,5 +1,8 @@
 # Changelog
-## 2.2.2
+## 2.2.3
+* Fix incompatibility with Kibe (#19)
+
+## 2.2.2 (04-12-2021)
 * Update to 1.18
 
 ## 2.2.1 (18-08-2021)
