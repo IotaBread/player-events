@@ -4,7 +4,6 @@ import me.bymartrixx.playerevents.api.event.PlayerKillEntityCallback;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -20,9 +19,9 @@ public class PlayerKillEntityMixin {
             locals = LocalCapture.CAPTURE_FAILSOFT
     )
     private void onEntityKilledEntity(DamageSource source, CallbackInfo ci, Entity entity) {
-        if (entity instanceof PlayerEntity) {
-            PlayerKillEntityCallback.EVENT.invoker().killEntity((ServerPlayerEntity) entity, (Entity) (Object) this);
-            io.github.bymartrixx.playerevents.api.event.PlayerKillEntityCallback.EVENT.invoker().killEntity((ServerPlayerEntity) entity, (Entity) (Object) this);
+        if (entity instanceof ServerPlayerEntity player) {
+            PlayerKillEntityCallback.EVENT.invoker().killEntity(player, (Entity) (Object) this);
+            io.github.bymartrixx.playerevents.api.event.PlayerKillEntityCallback.EVENT.invoker().killEntity(player, (Entity) (Object) this);
         }
     }
 }
