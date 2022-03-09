@@ -174,7 +174,7 @@ public class PlayerEventsConfig {
     private static void executeFunctions(String id, MinecraftServer server) {
         Identifier tag = new Identifier("player_events", id);
         CommandFunctionManager commandFunctionManager = server.getCommandFunctionManager();
-        Collection<CommandFunction> functions = ((CommandFunctionManagerAccessor) commandFunctionManager).getFunctionLoader().getTags().getTagOrEmpty(tag).values();
+        Collection<CommandFunction> functions = ((CommandFunctionManagerAccessor) commandFunctionManager).getFunctionLoader().getTagOrEmpty(tag).values();
         ((CommandFunctionManagerAccessor) commandFunctionManager).invokeExecuteAll(functions, tag);
     }
 
