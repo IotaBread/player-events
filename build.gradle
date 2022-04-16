@@ -102,9 +102,6 @@ repositories {
         url 'https://jitpack.io'
     }
     maven {
-        url 'https://maven.bymartrixx.me'
-    }
-    maven {
         url 'https://maven.nucleoid.xyz/'
     }
 }
@@ -119,8 +116,6 @@ dependencies {
 
     // FabricPlaceholderApi
     modImplementation include('eu.pb4:placeholder-api:1.1.3+1.17.1')
-
-    testImplementation 'me.bymartrixx:wdmcf:1.0.2'
 }
 
 publishing {
