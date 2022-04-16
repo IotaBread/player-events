@@ -16,7 +16,6 @@ public class PlayerKillPlayerMixin {
         Entity attacker = source.getAttacker();
         if (attacker instanceof ServerPlayerEntity player) {
             PlayerKillPlayerCallback.EVENT.invoker().killPlayer(player, (ServerPlayerEntity) (Object) this);
-            io.github.bymartrixx.playerevents.api.event.PlayerKillPlayerCallback.EVENT.invoker().killPlayer(player, (ServerPlayerEntity) (Object) this);
         }
     }
 }

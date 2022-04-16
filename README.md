@@ -194,11 +194,6 @@ Also, add this snippet to your `fabric.mod.json` if you want your mod to depend 
 * `leave` - `me.bymartrixx.playerevents.api.event.PlayerLeaveCallback.EVENT`
 * Command executed - `me.bymartrixx.playerevents.api.event.CommandExecutionCallback.EVENT`
 
-#### Note
-The package `io.github.bymartrixx.playerevents.api` has been moved to `me.bymartrixx.playerevents.api`,
-and the package `io.github.bymartrixx.player_events.api` has been removed. Classes under the package
-`io.github.bymartrixx.playerevents.api` have been deprecated and will be removed in a next release.
-
 #### Using the events
 Example snippet
 ```java

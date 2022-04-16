@@ -4,7 +4,6 @@ import me.bymartrixx.playerevents.api.event.PlayerLeaveCallback;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -19,11 +18,5 @@ public class PlayerLeaveMixin {
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerEntity;onDisconnect()V"), method = "onDisconnected", cancellable = true)
     private void onPlayerLeave(Text reason, CallbackInfo info) {
         PlayerLeaveCallback.EVENT.invoker().leaveServer(this.player, this.player.getServer());
-
-        ActionResult result1 = io.github.bymartrixx.playerevents.api.event.PlayerLeaveCallback.EVENT.invoker().leaveServer(this.player, this.player.getServer());
-
-        if (result1 == ActionResult.FAIL) {
-            info.cancel();
-        }
     }
 }

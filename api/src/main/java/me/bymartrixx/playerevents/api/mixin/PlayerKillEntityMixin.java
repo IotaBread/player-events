@@ -21,7 +21,6 @@ public class PlayerKillEntityMixin {
     private void onEntityKilledEntity(DamageSource source, CallbackInfo ci, Entity entity) {
         if (entity instanceof ServerPlayerEntity player) {
             PlayerKillEntityCallback.EVENT.invoker().killEntity(player, (Entity) (Object) this);
-            io.github.bymartrixx.playerevents.api.event.PlayerKillEntityCallback.EVENT.invoker().killEntity(player, (Entity) (Object) this);
         }
     }
 }
