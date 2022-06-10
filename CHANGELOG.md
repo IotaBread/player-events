@@ -1,5 +1,12 @@
 # Changelog
-## 2.2.3
+## 2.3.0
+* Refactor text parsing and placeholder replacement
+* Fix first death event
+
+## 2.2.4 (08-03-2022)
+* Update to 1.18.2
+
+## 2.2.3 (03-02-2022)
 * Fix incompatibility with Kibe (#19)
 
 ## 2.2.2 (04-12-2021)
