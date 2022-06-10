@@ -245,7 +245,7 @@ public class PlayerEventsConfig {
     }
 
     public void doFirstDeathActions(ServerPlayerEntity player) {
-        doSimpleAction(this.death, player);
+        doSimpleAction(this.firstDeath, player);
         executeFunctions("first_death", player.getServer());
     }
 

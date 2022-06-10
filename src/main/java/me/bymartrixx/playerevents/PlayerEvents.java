@@ -39,6 +39,8 @@ public class PlayerEvents implements DedicatedServerModInitializer {
             CONFIG.registerCustomCommands(dispatcher);
         });
 
+        PlayerFirstDeathCallback.EVENT.register((player, source) -> CONFIG.doFirstDeathActions(player));
+
         PlayerDeathCallback.EVENT.register((player, source) -> CONFIG.doDeathActions(player));
 
         PlayerFirstJoinCallback.EVENT.register(CONFIG::doFirstJoinActions);
