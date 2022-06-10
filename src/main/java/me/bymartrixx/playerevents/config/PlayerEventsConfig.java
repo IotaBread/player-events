@@ -5,11 +5,9 @@ import com.google.common.collect.Maps;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.CommandNode;
-import eu.pb4.placeholders.PlaceholderAPI;
-import eu.pb4.placeholders.TextParser;
 import me.bymartrixx.playerevents.PlayerEvents;
-import me.bymartrixx.playerevents.Utils;
 import me.bymartrixx.playerevents.mixin.CommandFunctionManagerAccessor;
+import me.bymartrixx.playerevents.util.Utils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
@@ -32,6 +30,8 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
+import static me.bymartrixx.playerevents.util.PlaceholderReplacingUtil.lazyResolver;
 
 public class PlayerEventsConfig {
     public static class Manager {
@@ -102,10 +102,7 @@ public class PlayerEventsConfig {
     }
 
     private static void doSimpleAction(ActionList actionList, ServerPlayerEntity player) {
-        Map<String, String> stringPlaceholders = Maps.newHashMap();
-        Utils.addEntityPlaceholders(stringPlaceholders, player, "player");
-        Map<String, Text> textPlaceholders = Maps.newHashMap();
-        Utils.addEntityTextPlaceholders(textPlaceholders, player, "player");
+        Map<String, Object> placeholderArgs = playerPlaceholder(player);
 
         List<String> actions;
         if (actionList.pickMessageRandomly()) {
@@ -116,17 +113,15 @@ public class PlayerEventsConfig {
         } else {
             actions = actionList.actions;
         }
+
         for (String action : actions) {
-            doAction(action, player, stringPlaceholders, textPlaceholders, actionList.doBroadcastToEveryone());
+            doAction(action, player, placeholderArgs, actionList.doBroadcastToEveryone());
         }
     }
 
     private static void doSimpleAction(ActionList actionList, ServerPlayerEntity player,
                                        MinecraftServer server) {
-        Map<String, String> stringPlaceholders = Maps.newHashMap();
-        Utils.addEntityPlaceholders(stringPlaceholders, player, "player");
-        Map<String, Text> textPlaceholders = Maps.newHashMap();
-        Utils.addEntityTextPlaceholders(textPlaceholders, player, "player");
+        Map<String, Object> placeholderArgs = playerPlaceholder(player);
 
         List<String> actions;
         if (actionList.pickMessageRandomly()) {
@@ -137,36 +132,32 @@ public class PlayerEventsConfig {
         } else {
             actions = actionList.actions;
         }
+
         for (String action : actions) {
-            doAction(action, player, server, stringPlaceholders, textPlaceholders, actionList.doBroadcastToEveryone());
+            doAction(action, player, server, placeholderArgs, actionList.doBroadcastToEveryone());
         }
     }
 
     private static void doAction(String action, ServerPlayerEntity player,
-                                 Map<String, String> strPlaceholders, Map<String, Text> textPlaceholders, boolean broadcast) {
+                                 Map<String, ?> placeholderArgs, boolean broadcast) {
         MinecraftServer server = player.getServer();
         if (server == null) {
             return; // Shouldn't happen
         }
 
-        doAction(action, player, server, strPlaceholders, textPlaceholders, broadcast);
+        doAction(action, player, server, placeholderArgs, broadcast);
     }
 
     private static void doAction(String action, ServerPlayerEntity player, MinecraftServer server,
-                                 Map<String, String> strPlaceholders, Map<String, Text> textPlaceholders, boolean broadcast) {
+                                 Map<String, ?> placeholderArgs, boolean broadcast) {
         action = action.trim();
 
+        Text message = Utils.parseAndReplace(action, player, placeholderArgs);
+
         if (action.startsWith("/")) {
-            String command = Utils.replacePlaceholders(action, strPlaceholders);
-            if (PlayerEvents.isPlaceholderApiLoaded()) {
-                command = PlaceholderAPI.parseString(PlaceholderAPI.parseString(command, player), server);
-            }
+            String command = message.getString();
             server.getCommandManager().execute(server.getCommandSource(), command);
         } else {
-            Text message = Utils.replaceTextPlaceholders(action, textPlaceholders);
-            if (PlayerEvents.isPlaceholderApiLoaded()) {
-                message = PlaceholderAPI.parseText(PlaceholderAPI.parseText(message, player), server);
-            }
             Utils.message(player, message, broadcast);
         }
     }
@@ -183,45 +174,33 @@ public class PlayerEventsConfig {
         if (actionList.pickMessageRandomly()) {
             message = message + " [Message picked randomly]";
         }
-        source.sendFeedback(new LiteralText("" + Formatting.GRAY + Formatting.ITALIC + message), false);
+        source.sendFeedback(Utils.literal("" + Formatting.GRAY + Formatting.ITALIC + message), false);
 
-        Map<String, String> stringPlaceholders = Maps.newHashMap();
-        Utils.addCommandSourcePlaceholders(stringPlaceholders, source, "player");
-        Map<String, Text> textPlaceholders = Maps.newHashMap();
-        Utils.addCommandSourceTextPlaceholders(textPlaceholders, source, "player");
+        Map<String, Object> placeholderArgs = playerPlaceholder(source);
+
         for (String action : actionList.actions) {
-            testAction(action, source, stringPlaceholders, textPlaceholders);
+            testAction(action, source, placeholderArgs);
         }
     }
 
     public static void testAction(String action, ServerCommandSource source,
-                                  Map<String, String> strPlaceholders, Map<String, Text> textPlaceholders) {
+                                  Map<String, Object> placeholderArgs) {
         action = action.trim();
 
+        Text message = Utils.parseAndReplace(action, source, placeholderArgs);
+
         if (action.startsWith("/")) {
-            String command = Utils.replacePlaceholders(action, strPlaceholders);
-            if (PlayerEvents.isPlaceholderApiLoaded()) {
-                // What's the replacement??
-                command = PlaceholderAPI.parseString(command, source.getServer());
-                try {
-                    command = PlaceholderAPI.parseString(command, source.getPlayer());
-                } catch (CommandSyntaxException ignored) {
-                    // Ignore
-                }
-            }
-            source.sendFeedback(new LiteralText("[COMMAND] " + command), false);
+            String command = message.getString();
+            source.sendFeedback(Utils.literal("[COMMAND] " + command), false);
         } else {
-            Text message = Utils.replaceTextPlaceholders(action, textPlaceholders);
-            if (PlayerEvents.isPlaceholderApiLoaded()) {
-                message = PlaceholderAPI.parseText(message, source.getServer());
-                try {
-                    message = PlaceholderAPI.parseText(message, source.getPlayer());
-                } catch (CommandSyntaxException ignored) {
-                    // Ignore
-                }
-            }
             source.sendFeedback(message, false);
         }
+    }
+
+    private static Map<String, Object> playerPlaceholder(Object player) {
+        Map<String, Object> map = Maps.newHashMap();
+        map.put("player", player);
+        return map;
     }
 
     private void load(PlayerEventsConfig newConfig) {
@@ -291,30 +270,22 @@ public class PlayerEventsConfig {
     }
 
     public void doKillEntityActions(ServerPlayerEntity player, Entity killedEntity) {
-        Map<String, String> strPlaceholders = Maps.newHashMap();
-        Utils.addEntityPlaceholders(strPlaceholders, player, "player");
-        Utils.addEntityPlaceholders(strPlaceholders, killedEntity, "killedEntity");
-        Map<String, Text> textPlaceholders = Maps.newHashMap();
-        Utils.addEntityTextPlaceholders(textPlaceholders, player, "player");
-        Utils.addEntityTextPlaceholders(textPlaceholders, killedEntity, "killedEntity");
+        Map<String, Object> placeholderArgs = playerPlaceholder(player);
+        placeholderArgs.put("killedEntity", killedEntity);
 
         for (String action : this.killEntity.actions) {
-            doAction(action, player, strPlaceholders, textPlaceholders, this.killEntity.doBroadcastToEveryone());
+            doAction(action, player, placeholderArgs, this.killEntity.doBroadcastToEveryone());
         }
 
         executeFunctions("kill_entity", player.getServer());
     }
 
     public void doKillPlayerActions(ServerPlayerEntity player, ServerPlayerEntity killedPlayer) {
-        Map<String, String> strPlaceholders = Maps.newHashMap();
-        Utils.addEntityPlaceholders(strPlaceholders, player, "player");
-        Utils.addEntityPlaceholders(strPlaceholders, killedPlayer, "killedPlayer");
-        Map<String, Text> textPlaceholders = Maps.newHashMap();
-        Utils.addEntityTextPlaceholders(textPlaceholders, player, "player");
-        Utils.addEntityTextPlaceholders(textPlaceholders, killedPlayer, "killedPlayer");
+        Map<String, Object> placeholderArgs = playerPlaceholder(player);
+        placeholderArgs.put("killedPlayer", killedPlayer);
 
         for (String action : this.killPlayer.actions) {
-            doAction(action, player, strPlaceholders, textPlaceholders, this.killPlayer.doBroadcastToEveryone());
+            doAction(action, player, placeholderArgs, this.killPlayer.doBroadcastToEveryone());
         }
 
         executeFunctions("kill_player", player.getServer());
@@ -333,7 +304,7 @@ public class PlayerEventsConfig {
     }
 
     public void testFirstDeathActions(ServerCommandSource source) {
-        testSimpleAction(this.firstDeath, source, "Fist death actions (%s):");
+        testSimpleAction(this.firstDeath, source, "First death actions (%s):");
     }
 
     public void testDeathActions(ServerCommandSource source) {
@@ -354,28 +325,19 @@ public class PlayerEventsConfig {
 
     public void testKillEntityActions(ServerCommandSource source) {
         String message = String.format("Kill entity actions (%s):", this.killEntity.doBroadcastToEveryone() ? "Send to everyone" : "Send only to the player");
-        source.sendFeedback(new LiteralText("" + Formatting.GRAY + Formatting.ITALIC + message), false);
+        source.sendFeedback(Utils.literal("" + Formatting.GRAY + Formatting.ITALIC + message), false);
 
-        Map<String, String> stringPlaceholders = Maps.newHashMap();
-        Utils.addCommandSourcePlaceholders(stringPlaceholders, source, "player");
-        stringPlaceholders.put("killedEntity", "dummyEntity");
-        stringPlaceholders.put("killedEntity.display", "Dummy entity");
-        stringPlaceholders.put("killedEntity.entityName", "Dummy");
-        stringPlaceholders.put("killedEntity.x", "0.0");
-        stringPlaceholders.put("killedEntity.y", "0.0");
-        stringPlaceholders.put("killedEntity.z", "0.0");
-
-        Map<String, Text> textPlaceholders = Maps.newHashMap();
-        Utils.addCommandSourceTextPlaceholders(textPlaceholders, source, "player");
-        textPlaceholders.put("killedEntity", new LiteralText("dummyEntity"));
-        textPlaceholders.put("killedEntity.display", new LiteralText("Dummy entity"));
-        textPlaceholders.put("killedEntity.entityName", new LiteralText("Dummy"));
-        textPlaceholders.put("killedEntity.x", new LiteralText("0.0"));
-        textPlaceholders.put("killedEntity.y", new LiteralText("0.0"));
-        textPlaceholders.put("killedEntity.z", new LiteralText("0.0"));
+        Map<String, Object> placeholderArgs = playerPlaceholder(source);
+        placeholderArgs.put("killedEntity", lazyResolver((subKey) -> switch (subKey) {
+            case "" -> Utils.literal("dummyEntity");
+            case "display" -> Utils.literal("Dummy entity");
+            case "entityName" -> Utils.literal("Dummy uuid");
+            case "x", "y", "z" -> Utils.literal("0.0");
+            default -> null;
+        }));
 
         for (String action : this.killEntity.actions) {
-            testAction(action, source, stringPlaceholders, textPlaceholders);
+            testAction(action, source, placeholderArgs);
         }
     }
 
@@ -383,30 +345,23 @@ public class PlayerEventsConfig {
         String message = String.format("Kill player actions (%s):", this.killPlayer.doBroadcastToEveryone() ? "Send to everyone" : "Send only to the player");
         source.sendFeedback(new LiteralText("" + Formatting.GRAY + Formatting.ITALIC + message), false);
 
-        Map<String, String> stringPlaceholders = Maps.newHashMap();
-        Utils.addCommandSourcePlaceholders(stringPlaceholders, source, "player");
-        Utils.addCommandSourcePlaceholders(stringPlaceholders, source, "killedPlayer");
-        Map<String, Text> textPlaceholders = Maps.newHashMap();
-        Utils.addCommandSourceTextPlaceholders(textPlaceholders, source, "player");
-        Utils.addCommandSourceTextPlaceholders(textPlaceholders, source, "killedPlayer");
+        Map<String, Object> placeholderArgs = playerPlaceholder(source);
+        placeholderArgs.put("killedPlayer", source);
 
         for (String action : this.killPlayer.actions) {
-            testAction(action, source, stringPlaceholders, textPlaceholders);
+            testAction(action, source, placeholderArgs);
         }
     }
 
     public void testCustomCommandsActions(ServerCommandSource source) {
-        Map<String, String> stringPlaceholders = Maps.newHashMap();
-        Utils.addCommandSourcePlaceholders(stringPlaceholders, source, "player");
-        Map<String, Text> textPlaceholders = Maps.newHashMap();
-        Utils.addCommandSourceTextPlaceholders(textPlaceholders, source, "player");
+        Map<String, Object> placeholderArgs = playerPlaceholder(source);
 
         for (CustomCommandActionList actionList : this.customCommands) {
             String message = String.format("'%s' actions ('%s'):", actionList.getCommandStr(), actionList.doBroadcastToEveryone() ? "Send to everyone" : "Send only to the player");
-            source.sendFeedback(new LiteralText("§7§o" + message), false);
+            source.sendFeedback(Utils.literal("§7§o" + message), false);
 
             for (String action : actionList.actions) {
-                testAction(action, source, stringPlaceholders, textPlaceholders);
+                testAction(action, source, placeholderArgs);
             }
         }
     }

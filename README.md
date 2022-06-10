@@ -102,13 +102,15 @@ Most (if not all) tokens have properties that can be accessed with something lik
 Here is a list of all the properties:
 - `display`
   Entity's display name, the one you see in the player list/chat. Example: "[Team blue] Tom421"
-- `uuid`
-  Entity's UUID
+- `entityName`
+  Entity's name, for players it's the player's name, for other entities it's the entity's uuid
 - `x` `y` `z`
   Entity coordinates
 - More coming soon™
 
-**Supports [color codes](https://minecraft.gamepedia.com/Formatting_codes#Color_codes) too!**
+~~Supports [color codes](https://minecraft.gamepedia.com/Formatting_codes#Color_codes) too!~~ Formatting with color
+codes breaks if you use a placeholder, use [Simple Text Format](https://placeholders.pb4.eu/user/text-format/) instead,
+which is far more complete than vanilla color codes.
 
 Use `/pe reload` or `/player_events reload` to reload the mod config.
 
