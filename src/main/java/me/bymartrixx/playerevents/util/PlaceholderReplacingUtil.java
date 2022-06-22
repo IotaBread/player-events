@@ -2,7 +2,7 @@ package me.bymartrixx.playerevents.util;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import eu.pb4.placeholders.PlaceholderAPI;
+import eu.pb4.placeholders.api.Placeholders;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
@@ -17,7 +17,7 @@ public class PlaceholderReplacingUtil {
     public static final KeyResolver<Entity> ENTITY_RESOLVER = (entity, subKey) -> switch (subKey) {
         case "" -> entity.getName();
         case "display" -> entity.getDisplayName();
-        case "entityName" -> Utils.literal(entity.getEntityName());
+        case "entityName" -> Text.literal(entity.getEntityName());
         case "x" -> Utils.doubleToText(entity.getX());
         case "y" -> Utils.doubleToText(entity.getY());
         case "z" -> Utils.doubleToText(entity.getZ());
@@ -30,9 +30,9 @@ public class PlaceholderReplacingUtil {
         }
 
         return switch (subKey) {
-            case "" -> Utils.literal(source.getName());
+            case "" -> Text.literal(source.getName());
             case "display" -> source.getDisplayName();
-            case "entityName" -> Utils.literal("none");
+            case "entityName" -> Text.literal("none");
             case "x" -> Utils.doubleToText(source.getPosition().x);
             case "y" -> Utils.doubleToText(source.getPosition().y);
             case "z" -> Utils.doubleToText(source.getPosition().z);
@@ -42,7 +42,7 @@ public class PlaceholderReplacingUtil {
     public static final KeyResolver<Text> TEXT_RESOLVER = (text, subKey) -> text;
     public static final KeyResolver<LazyResolver> LAZY_RESOLVER = LazyResolver::resolve;
 
-    public static final Pattern TOKEN_PATTERN = PlaceholderAPI.PREDEFINED_PLACEHOLDER_PATTERN;
+    public static final Pattern TOKEN_PATTERN = Placeholders.PREDEFINED_PLACEHOLDER_PATTERN;
 
     private static List<String> getPlaceholderKeys(String string) {
         Matcher matcher = TOKEN_PATTERN.matcher(string);
@@ -56,7 +56,7 @@ public class PlaceholderReplacingUtil {
 
     public static Text replacePlaceholders(String string, Text text, Map<String, ?> placeholderArgs) {
         Map<String, Text> placeholders = resolvePlaceholders(string, placeholderArgs);
-        return PlaceholderAPI.parsePredefinedText(text, TOKEN_PATTERN, placeholders);
+        return Placeholders.parseText(text, TOKEN_PATTERN, placeholders);
     }
 
     private static Map<String, Text> resolvePlaceholders(String string, Map<String, ?> placeholderArgs) {
@@ -81,7 +81,7 @@ public class PlaceholderReplacingUtil {
             }
         }
 
-        return Utils.literal("<Unknown placeholder '" + key + "'>");
+        return Text.literal("<Unknown placeholder '" + key + "'>");
     }
 
     private static  <T> Text resolve(KeyResolver<T> resolver, Object arg, String key) {

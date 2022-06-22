@@ -27,6 +27,7 @@
 
   "depends": {
     "player_events_api": "*",
-    "fabric": "*"
+    "fabric-command-api-v2": "*",
+    "minecraft": ">=1.19"
   }
 }

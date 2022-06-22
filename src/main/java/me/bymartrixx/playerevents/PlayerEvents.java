@@ -15,7 +15,7 @@ import me.bymartrixx.playerevents.api.event.PlayerLeaveCallback;
 import me.bymartrixx.playerevents.command.PlayerEventsCommand;
 import me.bymartrixx.playerevents.config.PlayerEventsConfig;
 import net.fabricmc.api.DedicatedServerModInitializer;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,7 +34,7 @@ public class PlayerEvents implements DedicatedServerModInitializer {
             LOGGER.error("Invalid JSON syntax in the config file", e);
         }
 
-        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             PlayerEventsCommand.register(dispatcher);
             CONFIG.registerCustomCommands(dispatcher);
         });

@@ -16,7 +16,6 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.function.CommandFunction;
 import net.minecraft.server.function.CommandFunctionManager;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -165,7 +164,7 @@ public class PlayerEventsConfig {
     private static void executeFunctions(String id, MinecraftServer server) {
         Identifier tag = new Identifier("player_events", id);
         CommandFunctionManager commandFunctionManager = server.getCommandFunctionManager();
-        Collection<CommandFunction> functions = ((CommandFunctionManagerAccessor) commandFunctionManager).getFunctionLoader().getTagOrEmpty(tag).values();
+        Collection<CommandFunction> functions = ((CommandFunctionManagerAccessor) commandFunctionManager).getFunctionLoader().getTagOrEmpty(tag);
         ((CommandFunctionManagerAccessor) commandFunctionManager).invokeExecuteAll(functions, tag);
     }
 
@@ -174,7 +173,7 @@ public class PlayerEventsConfig {
         if (actionList.pickMessageRandomly()) {
             message = message + " [Message picked randomly]";
         }
-        source.sendFeedback(Utils.literal("" + Formatting.GRAY + Formatting.ITALIC + message), false);
+        source.sendFeedback(Text.literal("" + Formatting.GRAY + Formatting.ITALIC + message), false);
 
         Map<String, Object> placeholderArgs = playerPlaceholder(source);
 
@@ -191,7 +190,7 @@ public class PlayerEventsConfig {
 
         if (action.startsWith("/")) {
             String command = message.getString();
-            source.sendFeedback(Utils.literal("[COMMAND] " + command), false);
+            source.sendFeedback(Text.literal("[COMMAND] " + command), false);
         } else {
             source.sendFeedback(message, false);
         }
@@ -325,14 +324,14 @@ public class PlayerEventsConfig {
 
     public void testKillEntityActions(ServerCommandSource source) {
         String message = String.format("Kill entity actions (%s):", this.killEntity.doBroadcastToEveryone() ? "Send to everyone" : "Send only to the player");
-        source.sendFeedback(Utils.literal("" + Formatting.GRAY + Formatting.ITALIC + message), false);
+        source.sendFeedback(Text.literal("" + Formatting.GRAY + Formatting.ITALIC + message), false);
 
         Map<String, Object> placeholderArgs = playerPlaceholder(source);
         placeholderArgs.put("killedEntity", lazyResolver((subKey) -> switch (subKey) {
-            case "" -> Utils.literal("dummyEntity");
-            case "display" -> Utils.literal("Dummy entity");
-            case "entityName" -> Utils.literal("Dummy uuid");
-            case "x", "y", "z" -> Utils.literal("0.0");
+            case "" -> Text.literal("dummyEntity");
+            case "display" -> Text.literal("Dummy entity");
+            case "entityName" -> Text.literal("Dummy uuid");
+            case "x", "y", "z" -> Text.literal("0.0");
             default -> null;
         }));
 
@@ -343,7 +342,7 @@ public class PlayerEventsConfig {
 
     public void testKillPlayerActions(ServerCommandSource source) {
         String message = String.format("Kill player actions (%s):", this.killPlayer.doBroadcastToEveryone() ? "Send to everyone" : "Send only to the player");
-        source.sendFeedback(new LiteralText("" + Formatting.GRAY + Formatting.ITALIC + message), false);
+        source.sendFeedback(Text.literal("" + Formatting.GRAY + Formatting.ITALIC + message), false);
 
         Map<String, Object> placeholderArgs = playerPlaceholder(source);
         placeholderArgs.put("killedPlayer", source);
@@ -358,7 +357,7 @@ public class PlayerEventsConfig {
 
         for (CustomCommandActionList actionList : this.customCommands) {
             String message = String.format("'%s' actions ('%s'):", actionList.getCommandStr(), actionList.doBroadcastToEveryone() ? "Send to everyone" : "Send only to the player");
-            source.sendFeedback(Utils.literal("§7§o" + message), false);
+            source.sendFeedback(Text.literal("§7§o" + message), false);
 
             for (String action : actionList.actions) {
                 testAction(action, source, placeholderArgs);
