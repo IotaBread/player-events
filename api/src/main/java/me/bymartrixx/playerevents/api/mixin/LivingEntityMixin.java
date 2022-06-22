@@ -12,13 +12,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(LivingEntity.class)
-public class PlayerKillEntityMixin {
-    @Inject(
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;onKilledBy(Lnet/minecraft/entity/LivingEntity;)V"),
-            method = "onDeath",
-            locals = LocalCapture.CAPTURE_FAILSOFT
-    )
-    private void onEntityKilledEntity(DamageSource source, CallbackInfo ci, Entity entity) {
+public class LivingEntityMixin {
+    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;onKilledBy(Lnet/minecraft/entity/LivingEntity;)V"),
+            method = "onDeath", locals = LocalCapture.CAPTURE_FAILSOFT)
+    private void onKilledByEntity(DamageSource source, CallbackInfo ci, Entity entity) {
         if (entity instanceof ServerPlayerEntity player) {
             PlayerKillEntityCallback.EVENT.invoker().killEntity(player, (Entity) (Object) this);
         }

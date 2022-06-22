@@ -1,14 +1,12 @@
 {
   "required": true,
   "package": "me.bymartrixx.playerevents.api.mixin",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "CommandExecutionMixin",
-    "PlayerDeathMixin",
-    "PlayerJoinMixin",
-    "PlayerLeaveMixin",
-    "PlayerKillEntityMixin",
-    "PlayerKillPlayerMixin"
+    "LivingEntityMixin",
+    "PlayerManagerMixin",
+    "ServerPlayerEntityMixin",
+    "ServerPlayNetworkHandlerMixin"
   ],
   "client": [],
   "server": [],
