@@ -1,5 +1,8 @@
 # Changelog
-## 2.3.0
+## 2.3.1
+* Update to 1.19
+
+## 2.3.0 (09-06-2022)
 * Refactor text parsing and placeholder replacement
 * Fix first death event
 
