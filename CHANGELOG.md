@@ -1,5 +1,13 @@
 # Changelog
-## 2.3.1
+## 2.4.0 [1.19]
+- Fix `/` executing every custom command
+- Fix execution of commands not working (#26)
+- Fix custom commands not doing anything
+
+## 2.3.2 [1.18.2] (12-07-2022)
+- Fix `/` executing every custom command
+
+## 2.3.1 (21-06-2022)
 * Update to 1.19
 
 ## 2.3.0 (09-06-2022)
