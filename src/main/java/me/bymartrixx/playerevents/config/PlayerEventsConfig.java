@@ -300,7 +300,7 @@ public class PlayerEventsConfig {
     public void doCustomCommandsActions(String command, ServerCommandSource source) {
         // Run actions from the event to allow editing the actions without restarting the server
         for (CustomCommandActionList customCommand : this.customCommands) {
-            if (command.startsWith(customCommand.getCommandStr())) {
+            if (command.startsWith(customCommand.getCommand())) {
                 try {
                     doSimpleAction(customCommand, source.getPlayer());
                 } catch (CommandSyntaxException e) {
