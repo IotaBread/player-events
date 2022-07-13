@@ -156,7 +156,7 @@ public class PlayerEventsConfig {
 
         if (action.startsWith("/")) {
             String command = message.getString();
-            server.getCommandManager().execute(server.getCommandSource(), command);
+            server.getCommandManager().executePrefixedCommand(server.getCommandSource(), command);
         } else {
             Utils.message(player, message, broadcast);
         }
