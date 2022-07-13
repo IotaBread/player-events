@@ -1,5 +1,8 @@
 # Changelog
-## 2.3.1
+## 2.3.2 [1.18.2]
+- Fix `/` executing every custom command
+
+## 2.3.1 (21-06-2022)
 * Update to 1.19
 
 ## 2.3.0 (09-06-2022)
