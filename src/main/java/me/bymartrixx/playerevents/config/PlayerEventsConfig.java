@@ -351,7 +351,7 @@ public class PlayerEventsConfig {
 
     public void testKillPlayerActions(ServerCommandSource source) {
         String message = String.format("Kill player actions (%s):", this.killPlayer.doBroadcastToEveryone() ? "Send to everyone" : "Send only to the player");
-        source.sendFeedback(new LiteralText("" + Formatting.GRAY + Formatting.ITALIC + message), false);
+        source.sendFeedback(Utils.literal("" + Formatting.GRAY + Formatting.ITALIC + message), false);
 
         Map<String, Object> placeholderArgs = playerPlaceholder(source);
         placeholderArgs.put("killedPlayer", source);

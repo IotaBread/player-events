@@ -1,19 +1,12 @@
-buildscript {
-    dependencies {
-        classpath group: 'gradle.plugin.com.modrinth.minotaur', name: 'Minotaur', version: '1.2.1'
-    }
-}
-
 plugins {
-    id 'fabric-loom' version '0.11-SNAPSHOT'
+    id 'fabric-loom' version '0.12-SNAPSHOT'
     id 'maven-publish'
     id 'java-library'
+    id 'com.modrinth.minotaur' version '2.2.0'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
-    id 'org.quiltmc.quilt-mappings-on-loom' version '4.0.0'
-    id 'io.github.juuxel.loom-quiltflower' version '1.6.0'
+    id 'org.quiltmc.quilt-mappings-on-loom' version '4.2.0'
+    id 'io.github.juuxel.loom-quiltflower' version '1.7.2'
 }
-
-apply plugin: 'com.modrinth.minotaur'
 
 archivesBaseName = project.archives_base_name
 group = project.maven_group
@@ -106,7 +99,6 @@ repositories {
     }
 }
 
-// Ugly, but works
 rootProject.processResources.dependsOn(project(':api').processResources)
 
 dependencies {
@@ -136,19 +128,16 @@ publishing {
     }
 }
 
-import com.modrinth.minotaur.TaskModrinthUpload
-
-task modrinth (type: TaskModrinthUpload, dependsOn: build) {
+modrinth {
     token = project.hasProperty('modrinth_token') ? project.property('modrinth_token') : System.getenv('MODRINTH_TOKEN')
     projectId = 'NLx6lJPJ'
     versionNumber = project.version
     versionName = "Player Events ${project.version}"
     uploadFile = remapJar
     changelog = "A changelog can be found at https://github.com/ByMartrixx/player-events/releases/tag/${version}"
-    addGameVersion('1.18.2')
-    addLoader('fabric')
-    addLoader('quilt')
-    addFile(project(':api').remapJar)
+    gameVersions = ['1.18.2']
+    loaders = ['fabric', 'quilt']
+    additionalFiles = [project(':api').remapJar]
 }
 
 curseforge {
