@@ -3,6 +3,7 @@ package me.bymartrixx.playerevents.config;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.CommandNode;
 import me.bymartrixx.playerevents.PlayerEvents;
@@ -213,7 +214,13 @@ public class PlayerEventsConfig {
         this.leave.load(newConfig.leave);
 
         this.customCommands.clear();
-        this.customCommands.addAll(newConfig.customCommands);
+        for (CustomCommandActionList customCommand : newConfig.customCommands) {
+            if (customCommand.getCommand().isEmpty()) {
+                PlayerEvents.LOGGER.warn("Found an invalid empty custom command");
+            } else {
+                this.customCommands.add(customCommand);
+            }
+        }
     }
 
     public List<String> getFirstDeathActions() {
@@ -292,10 +299,11 @@ public class PlayerEventsConfig {
     }
 
     public void doCustomCommandsActions(String command, ServerCommandSource source) {
-        for (CustomCommandActionList actionList : this.customCommands) {
-            if (actionList.getCommandStr().startsWith(command)) {
+        // Run actions from the event to allow editing the actions without restarting the server
+        for (CustomCommandActionList customCommand : this.customCommands) {
+            if (command.startsWith(customCommand.getCommandStr())) {
                 try {
-                    doSimpleAction(actionList, source.getPlayer());
+                    doSimpleAction(customCommand, source.getPlayer());
                 } catch (CommandSyntaxException e) {
                     PlayerEvents.LOGGER.error("This should not happen, please report it to the mod author, attaching the logs", e);
                 }
@@ -379,12 +387,21 @@ public class PlayerEventsConfig {
 
     public void registerCustomCommands(CommandDispatcher<ServerCommandSource> dispatcher) {
         CommandNode<ServerCommandSource> root = dispatcher.getRoot();
-        for (CustomCommandActionList actionList : this.customCommands) {
-            CommandNode<ServerCommandSource> node = root.getChild(actionList.getCommand());
+        for (CustomCommandActionList customCommand : this.customCommands) {
+            CommandNode<ServerCommandSource> node = root.getChild(customCommand.getCommand());
             if (node == null) {
-                dispatcher.register(CommandManager.literal(actionList.getCommand()).executes(ctx -> 1));
+                dispatcher.register(CommandManager.literal(customCommand.getCommand()).executes(this::executeCommand));
             }
         }
+    }
+
+    private int executeCommand(CommandContext<ServerCommandSource> ctx) {
+        ServerCommandSource source = ctx.getSource();
+        if (!(source.getEntity() instanceof ServerPlayerEntity)) {
+            source.sendFeedback(Utils.literal("This command can only be executed by players"), false);
+        }
+
+        return 1;
     }
 
     public static class ActionList {
