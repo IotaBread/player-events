@@ -15,15 +15,24 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(ServerPlayNetworkHandler.class)
+@SuppressWarnings({"InvalidInjectorMethodSignature", "MixinAnnotationTarget", "UnresolvedMixinReference"})
 public class ServerPlayNetworkHandlerMixin {
     @Shadow
     public ServerPlayerEntity player;
 
     // Just after the command is executed
+    // 1.19
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayNetworkHandler;checkForSpam()V"),
-            method = "onChatCommand", locals = LocalCapture.CAPTURE_FAILSOFT)
+            method = "onChatCommand", locals = LocalCapture.CAPTURE_FAILSOFT, require = 0)
     private void onCommandExecuted(ChatCommandC2SPacket packet, CallbackInfo ci, ServerCommandSource source) {
         CommandExecutionCallback.EVENT.invoker().onExecuted(packet.command(), source);
+    }
+
+    // 1.19.1/2
+    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayNetworkHandler;checkForSpam()V"),
+            method = "method_44356", require = 0)
+    private void onCommandExecuted(ChatCommandC2SPacket packet, CallbackInfo ci) {
+        CommandExecutionCallback.EVENT.invoker().onExecuted(packet.command(), this.player.getCommandSource());
     }
 
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerEntity;onDisconnect()V"), method = "onDisconnected")

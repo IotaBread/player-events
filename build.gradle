@@ -135,7 +135,7 @@ modrinth {
     versionName = "Player Events ${project.version}"
     uploadFile = remapJar
     changelog = "A changelog can be found at https://github.com/ByMartrixx/player-events/releases/tag/${version}"
-    gameVersions = ['1.19']
+    gameVersions = ['1.19', '1.19.1', '1.19.2']
     loaders = ['fabric', 'quilt']
     additionalFiles = [project(':api').remapJar]
 }
@@ -149,6 +149,8 @@ curseforge {
         changelog = "A changelog can be found at https://github.com/ByMartrixx/player-events/releases/tag/${version}"
         releaseType = 'release'
         addGameVersion '1.19'
+        addGameVersion '1.19.1'
+        addGameVersion '1.19.2'
         addGameVersion 'Fabric'
         addGameVersion 'Quilt'
         mainArtifact(remapJar) {
