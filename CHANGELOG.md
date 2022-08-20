@@ -1,5 +1,9 @@
 # Changelog
-## 2.4.0 [1.19]
+## 2.4.1 [1.19]
+- Update to 1.19.2
+- Fix custom commands triggering incorrectly
+
+## 2.4.0 [1.19] (12-07-2022)
 - Fix `/` executing every custom command
 - Fix execution of commands not working (#26)
 - Fix custom commands not doing anything
