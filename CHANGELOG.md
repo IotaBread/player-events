@@ -1,5 +1,8 @@
 # Changelog
-## 2.4.1 [1.19]
+## 2.4.2 [1.19]
+- Update to 1.19.3
+
+## 2.4.1 [1.19] (19-08-2022)
 - Update to 1.19.2
 - Fix custom commands triggering incorrectly
 
