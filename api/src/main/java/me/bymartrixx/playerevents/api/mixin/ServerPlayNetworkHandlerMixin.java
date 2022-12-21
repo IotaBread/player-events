@@ -33,14 +33,14 @@ public class ServerPlayNetworkHandlerMixin {
 
     // 1.19.1/2
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayNetworkHandler;checkForSpam()V"),
-            method = "method_44356", require = 0)
+            method = "method_44356(Lnet/minecraft/class_7472;)V", require = 0)
     private void onCommandExecuted(ChatCommandC2SPacket packet, CallbackInfo ci) {
         CommandExecutionCallback.EVENT.invoker().onExecuted(packet.command(), this.player.getCommandSource());
     }
 
     // 1.19.3
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayNetworkHandler;checkForSpam()V"),
-            method = "m_bbegevsu", require = 0)
+            method = "method_44356(Lnet/minecraft/class_7472;Ljava/util/Optional;)V", require = 0)
     private void onCommandExecuted(ChatCommandC2SPacket packet, Optional<C_mofgmouu> optional, CallbackInfo ci) {
         CommandExecutionCallback.EVENT.invoker().onExecuted(packet.command(), this.player.getCommandSource());
     }
