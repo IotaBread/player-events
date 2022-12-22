@@ -105,6 +105,7 @@ dependencies {
 
     // FabricPlaceholderApi
     modImplementation libs.placeholder.api
+    include libs.placeholder.apiF
 }
 
 publishing {
