@@ -17,6 +17,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.function.CommandFunction;
 import net.minecraft.server.function.CommandFunctionManager;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -34,6 +35,9 @@ import java.util.Map;
 import static me.bymartrixx.playerevents.util.PlaceholderReplacingUtil.lazyResolver;
 
 public class PlayerEventsConfig {
+    private static final String TEST_TEXT_PREFIX = String.valueOf(Formatting.GRAY) + Formatting.ITALIC;
+    private static final MutableText PLAYER_ONLY_COMMAND_ERROR_TEXT = Text.literal("This command can only be executed by players");
+
     public static class Manager {
         private static File configFile;
 
@@ -174,7 +178,9 @@ public class PlayerEventsConfig {
         if (actionList.pickMessageRandomly()) {
             message = message + " [Message picked randomly]";
         }
-        source.sendFeedback(Text.literal("" + Formatting.GRAY + Formatting.ITALIC + message), false);
+
+        String finalMessage = message;
+        source.sendFeedback(() -> Text.literal(TEST_TEXT_PREFIX + finalMessage), false);
 
         Map<String, Object> placeholderArgs = playerPlaceholder(source);
 
@@ -191,9 +197,9 @@ public class PlayerEventsConfig {
 
         if (action.startsWith("/")) {
             String command = message.getString();
-            source.sendFeedback(Text.literal("[COMMAND] " + command), false);
+            source.sendFeedback(() -> Text.literal("[COMMAND] " + command), false);
         } else {
-            source.sendFeedback(message, false);
+            source.sendFeedback(() -> message, false);
         }
     }
 
@@ -301,11 +307,7 @@ public class PlayerEventsConfig {
         // Run actions from the event to allow editing the actions without restarting the server
         for (CustomCommandActionList customCommand : this.customCommands) {
             if (command.trim().equals(customCommand.getCommand())) {
-                try {
-                    doSimpleAction(customCommand, source.getPlayer());
-                } catch (CommandSyntaxException e) {
-                    PlayerEvents.LOGGER.error("This should not happen, please report it to the mod author, attaching the logs", e);
-                }
+                doSimpleAction(customCommand, source.getPlayer());
             }
         }
     }
@@ -332,7 +334,7 @@ public class PlayerEventsConfig {
 
     public void testKillEntityActions(ServerCommandSource source) {
         String message = String.format("Kill entity actions (%s):", this.killEntity.doBroadcastToEveryone() ? "Send to everyone" : "Send only to the player");
-        source.sendFeedback(Text.literal("" + Formatting.GRAY + Formatting.ITALIC + message), false);
+        source.sendFeedback(() -> Text.literal(TEST_TEXT_PREFIX + message), false);
 
         Map<String, Object> placeholderArgs = playerPlaceholder(source);
         placeholderArgs.put("killedEntity", lazyResolver((subKey) -> switch (subKey) {
@@ -350,7 +352,7 @@ public class PlayerEventsConfig {
 
     public void testKillPlayerActions(ServerCommandSource source) {
         String message = String.format("Kill player actions (%s):", this.killPlayer.doBroadcastToEveryone() ? "Send to everyone" : "Send only to the player");
-        source.sendFeedback(Text.literal("" + Formatting.GRAY + Formatting.ITALIC + message), false);
+        source.sendFeedback(() -> Text.literal(TEST_TEXT_PREFIX + message), false);
 
         Map<String, Object> placeholderArgs = playerPlaceholder(source);
         placeholderArgs.put("killedPlayer", source);
@@ -365,7 +367,7 @@ public class PlayerEventsConfig {
 
         for (CustomCommandActionList actionList : this.customCommands) {
             String message = String.format("'%s' actions ('%s'):", actionList.getCommandStr(), actionList.doBroadcastToEveryone() ? "Send to everyone" : "Send only to the player");
-            source.sendFeedback(Text.literal("§7§o" + message), false);
+            source.sendFeedback(() -> Text.literal(TEST_TEXT_PREFIX + message), false);
 
             for (String action : actionList.actions) {
                 testAction(action, source, placeholderArgs);
@@ -397,7 +399,7 @@ public class PlayerEventsConfig {
     private int executeCommand(CommandContext<ServerCommandSource> ctx) {
         ServerCommandSource source = ctx.getSource();
         if (!(source.getEntity() instanceof ServerPlayerEntity)) {
-            source.sendFeedback(Text.literal("This command can only be executed by players"), false);
+            source.sendFeedback(() -> PLAYER_ONLY_COMMAND_ERROR_TEXT, false);
         }
 
         return 1;
