@@ -116,13 +116,7 @@ publishing {
     }
 
     repositories {
-        maven {
-            url 's3://maven.bymartrixx.me'
-            credentials(AwsCredentials) {
-                accessKey = System.env.AWS_ACCESS_KEY ?: findProperty('mavenAccessKey')
-                secretKey = System.env.AWS_SECRET_KEY ?: findProperty('mavenSecretKey')
-            }
-        }
+        mavenLocal()
     }
 }
 
@@ -130,10 +124,10 @@ modrinth {
     token = project.hasProperty('modrinth_token') ? project.property('modrinth_token') : System.getenv('MODRINTH_TOKEN')
     projectId = 'NLx6lJPJ'
     versionNumber = project.version
-    versionName = "Player Events ${project.version}"
+    versionName = "Player Events ${project.version} for Minecraft 1.20.1"
     uploadFile = remapJar
     changelog = "A changelog can be found at https://github.com/ByMartrixx/player-events/releases/tag/${version}"
-    gameVersions = ['1.19', '1.19.1', '1.19.2', '1.19.3']
+    gameVersions = ['1.20.1']
     loaders = ['fabric', 'quilt']
     additionalFiles = [project(':api').remapJar]
 }
@@ -146,17 +140,14 @@ curseforge {
         id = '404348'
         changelog = "A changelog can be found at https://github.com/ByMartrixx/player-events/releases/tag/${version}"
         releaseType = 'release'
-        addGameVersion '1.19'
-        addGameVersion '1.19.1'
-        addGameVersion '1.19.2'
-        addGameVersion '1.19.3'
+        addGameVersion '1.20.1'
         addGameVersion 'Fabric'
         addGameVersion 'Quilt'
         mainArtifact(remapJar) {
-            displayName = "Player Events ${version}"
+            displayName = "Player Events ${version} for Minecraft 1.20.1"
         }
         addArtifact(project(':api').remapJar) {
-            displayName = "Player Events API ${version}"
+            displayName = "Player Events API ${version} for Minecraft 1.20.1"
         }
         afterEvaluate {
             uploadTask.dependsOn('remapJar')
